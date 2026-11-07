@@ -1,4 +1,5 @@
 ---
+import DailySpecial from '~/components/DailySpecial.astro';
 import Icon from '~/components/Icon.astro';
 import MenuItemRow from '~/components/MenuItemRow.astro';
 import { site } from '~/config';
@@ -35,6 +36,7 @@ const categories = site.menu.filter((category) => category.items.length > 0);
         <Icon name="printer" />
         {t.cta.print}
       </button>
+      <DailySpecial lang={lang} variant="menu" class="mt-8 print:mt-4" />
     </div>
   </section>
 

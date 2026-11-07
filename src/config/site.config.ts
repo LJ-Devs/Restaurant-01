@@ -42,8 +42,8 @@ const config: SiteConfig = {
       en: 'Chanfana, roast suckling pig, bacalhau and petiscos in downtown Coimbra. Lunch and dinner, Tuesday to Saturday. Book by phone or WhatsApp.',
     },
     menuDescription: {
-      pt: 'Menu da Tasca do Largo com preços: entradas, peixe, carne, sobremesas e vinhos da Bairrada. Pratos vegetarianos e sem glúten assinalados.',
-      en: 'Tasca do Largo menu with prices: starters, fish, meat, desserts and Bairrada wines. Vegetarian and gluten-free dishes marked.',
+      pt: 'Menu da Tasca do Largo com preços: entradas, peixe, carne, pratos vegetarianos, sobremesas caseiras e vinhos da Bairrada.',
+      en: 'Tasca do Largo menu with prices: starters, fish, meat, vegetarian dishes, homemade desserts and Bairrada wines.',
     },
   },
 
@@ -114,8 +114,19 @@ const config: SiteConfig = {
   },
 
   menuIntro: {
-    pt: 'Cozinha de tacho, petiscos para partilhar e vinhos da Bairrada e do Dão. Pergunte-nos pelo prato do dia.',
-    en: 'Slow-cooked dishes, petiscos to share and wines from Bairrada and Dão. Ask us about the dish of the day.',
+    pt: 'Cozinha de tacho, petiscos para partilhar e vinhos da Bairrada e do Dão.',
+    en: 'Slow-cooked dishes, petiscos to share and wines from Bairrada and Dão.',
+  },
+
+  // Dish of the day: update it when it changes, or delete this block.
+  dailySpecial: {
+    label: { pt: 'Menu do dia', en: 'Lunch menu of the day' },
+    name: { pt: 'Feijoada à transmontana', en: 'Trás-os-Montes bean stew' },
+    description: {
+      pt: 'Inclui sopa, bebida e café. De terça a sexta, ao almoço.',
+      en: 'Includes soup, a drink and coffee. Tuesday to Friday, at lunchtime.',
+    },
+    price: 12.5,
   },
 
   menu: [
@@ -131,7 +142,6 @@ const config: SiteConfig = {
             en: 'Homemade bread, butter and marinated olives.',
           },
           price: 2.5,
-          tags: ['vegetarian'],
         },
         {
           id: 'caldo-verde',
@@ -141,7 +151,6 @@ const config: SiteConfig = {
             en: 'With a slice of chouriço and a drizzle of olive oil.',
           },
           price: 3.5,
-          tags: ['gluten-free'],
           photo: {
             src: 'prato-caldo-verde.jpg',
             alt: {
@@ -154,7 +163,6 @@ const config: SiteConfig = {
           id: 'sopa-legumes',
           name: { pt: 'Sopa de legumes da época', en: 'Seasonal vegetable soup' },
           price: 3,
-          tags: ['vegan', 'gluten-free'],
         },
         {
           id: 'pasteis-bacalhau',
@@ -182,7 +190,6 @@ const config: SiteConfig = {
             en: 'Soft and creamy, served with toast.',
           },
           price: 12,
-          tags: ['vegetarian'],
         },
       ],
     },
@@ -201,7 +208,6 @@ const config: SiteConfig = {
             { label: { pt: 'Meia dose', en: 'Half portion' }, price: 9.5 },
             { label: { pt: 'Dose', en: 'Full portion' }, price: 14 },
           ],
-          tags: ['gluten-free'],
           photo: {
             src: 'prato-bacalhau-gomes-de-sa.jpg',
             alt: {
@@ -218,7 +224,6 @@ const config: SiteConfig = {
             en: 'Shredded salt cod with matchstick potatoes, egg and onion, olives and parsley.',
           },
           price: 13.5,
-          tags: ['gluten-free'],
         },
         {
           id: 'polvo-a-lagareiro',
@@ -228,7 +233,6 @@ const config: SiteConfig = {
             en: 'Oven-roasted octopus with crushed baby potatoes, garlic and plenty of olive oil.',
           },
           price: 18.5,
-          tags: ['gluten-free'],
           photo: {
             src: 'prato-polvo-a-lagareiro.jpg',
             alt: {
@@ -245,7 +249,6 @@ const config: SiteConfig = {
             en: 'Charcoal-grilled, with boiled potatoes and pepper salad. June to September.',
           },
           price: 12.5,
-          tags: ['gluten-free'],
           photo: {
             src: 'prato-sardinhas-assadas.jpg',
             alt: {
@@ -271,7 +274,6 @@ const config: SiteConfig = {
             en: 'Fresh fish from the market, with boiled potatoes and vegetables.',
           },
           priceNote: { pt: 'Preço do dia', en: 'Market price' },
-          tags: ['gluten-free'],
         },
       ],
     },
@@ -287,7 +289,6 @@ const config: SiteConfig = {
             en: 'Goat slow-cooked in red wine in a clay pot, with boiled potatoes.',
           },
           price: 15.5,
-          tags: ['gluten-free'],
           photo: {
             src: 'prato-chanfana.jpg',
             alt: {
@@ -323,7 +324,6 @@ const config: SiteConfig = {
             en: 'Oven-baked rice with shredded duck, topped with crispy chouriço.',
           },
           price: 13.5,
-          tags: ['gluten-free'],
         },
         {
           id: 'bitoque',
@@ -348,7 +348,6 @@ const config: SiteConfig = {
             en: 'Soupy rice with sautéed mushrooms and green asparagus.',
           },
           price: 11,
-          tags: ['vegan', 'gluten-free'],
         },
         {
           id: 'feijoada-legumes',
@@ -358,7 +357,6 @@ const config: SiteConfig = {
             en: 'Red bean stew with seasonal vegetables and white rice.',
           },
           price: 10.5,
-          tags: ['vegan', 'gluten-free'],
         },
       ],
     },
@@ -375,7 +373,6 @@ const config: SiteConfig = {
             en: 'Creamy, with lemon zest and cinnamon.',
           },
           price: 4,
-          tags: ['vegetarian', 'gluten-free'],
           photo: {
             src: 'sobremesa-arroz-doce.jpg',
             alt: {
@@ -392,19 +389,16 @@ const config: SiteConfig = {
             en: 'The region’s convent pastry: paper-thin dough filled with sweet egg cream.',
           },
           price: 3.5,
-          tags: ['vegetarian'],
         },
         {
           id: 'pudim',
           name: { pt: 'Pudim caseiro', en: 'Homemade flan' },
           price: 4,
-          tags: ['vegetarian', 'gluten-free'],
         },
         {
           id: 'fruta',
           name: { pt: 'Fruta da época', en: 'Seasonal fruit' },
           price: 3,
-          tags: ['vegan', 'gluten-free'],
         },
       ],
     },
@@ -420,7 +414,6 @@ const config: SiteConfig = {
             { label: { pt: 'Copo', en: 'Glass' }, price: 3 },
             { label: { pt: 'Jarro 50 cl', en: 'Jug 50 cl' }, price: 7.5 },
           ],
-          tags: ['vegan', 'gluten-free'],
         },
         {
           id: 'espumante',
@@ -444,7 +437,6 @@ const config: SiteConfig = {
           id: 'sumo-laranja',
           name: { pt: 'Sumo de laranja natural', en: 'Fresh orange juice' },
           price: 3,
-          tags: ['vegan', 'gluten-free'],
         },
         {
           id: 'agua',
@@ -463,9 +455,9 @@ const config: SiteConfig = {
   featuredDishes: [
     'chanfana',
     'leitao-a-bairrada',
-    'bacalhau-a-bras',
+    'bacalhau-gomes-de-sa',
     'polvo-a-lagareiro',
-    'arroz-de-pato',
+    'sardinhas-assadas',
     'arroz-doce',
   ],
 
@@ -494,8 +486,8 @@ const config: SiteConfig = {
         name: 'Rui',
         rating: 5,
         text: {
-          pt: 'Comida caseira a sério, doses generosas e preços honestos. O bacalhau à Brás é obrigatório.',
-          en: 'Proper home cooking, generous portions and honest prices. The bacalhau à Brás is a must.',
+          pt: 'Comida caseira a sério, doses generosas e preços honestos. O bacalhau à Gomes de Sá é obrigatório.',
+          en: 'Proper home cooking, generous portions and honest prices. The bacalhau à Gomes de Sá is a must.',
         },
       },
       {
@@ -518,30 +510,32 @@ const config: SiteConfig = {
     hero: {
       src: 'hero-mesa-petiscos.jpg',
       alt: {
-        pt: 'Mesa com petiscos portugueses, pão, azeitonas e vinho tinto',
-        en: 'Table with Portuguese petiscos, bread, olives and red wine',
+        pt: 'Mesa de madeira com petiscos, pão e copos de vinho tinto, à luz quente da sala',
+        en: 'Wooden table with small dishes, bread and glasses of red wine in a warmly lit room',
       },
+      // On phones, show the right side of the photo (the wine glass).
+      focus: 'right',
     },
     about: [
       {
         src: 'sobre-tachos-ao-lume.jpg',
         alt: {
-          pt: 'Tachos de barro ao lume na cozinha da tasca',
-          en: 'Clay pots simmering in the tasca’s kitchen',
+          pt: 'Tacho de barro com carne e legumes a cozinhar sobre as brasas',
+          en: 'Clay pot of meat and vegetables cooking over the embers',
         },
       },
       {
-        src: 'sobre-pao-azeite-vinho.jpg',
+        src: 'sobre-pao-e-azeite.jpg',
         alt: {
-          pt: 'Pão caseiro, azeite e um copo de vinho tinto',
-          en: 'Homemade bread, olive oil and a glass of red wine',
+          pt: 'Pão caseiro às fatias com azeite e azeitonas numa taça azul e branca',
+          en: 'Sliced homemade bread with olive oil and olives in a blue and white bowl',
         },
       },
       {
         src: 'sobre-mesa-posta.jpg',
         alt: {
-          pt: 'Mesa posta com toalha aos quadrados e pratos de loiça',
-          en: 'Table set with a checked tablecloth and ceramic plates',
+          pt: 'Mesa posta com cesto de pão, azeitonas e a carta',
+          en: 'Table set with a bread basket, olives and the menu',
         },
       },
     ],

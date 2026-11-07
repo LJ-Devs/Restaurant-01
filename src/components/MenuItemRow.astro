@@ -1,7 +1,6 @@
 ---
 import type { Locale, MenuItem } from '~/config/types';
 import { formatPrice } from '~/lib/format';
-import DietaryTags from './DietaryTags.astro';
 import Photo from './Photo.astro';
 
 interface Props {
@@ -62,6 +61,5 @@ const options = Array.isArray(item.price) ? item.price : [];
         </ul>
       )
     }
-    <DietaryTags tags={item.tags} lang={lang} class="mt-2.5 print:mt-1" />
   </div>
 </li>

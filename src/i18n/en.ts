@@ -19,6 +19,7 @@ export const en: UIStrings = {
   a11y: {
     skipToContent: 'Skip to content',
     mainNav: 'Main navigation',
+    mobileNav: 'Site navigation',
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
     otherLanguage: 'Versão em português',
@@ -46,6 +47,7 @@ export const en: UIStrings = {
   },
   cta: {
     book: 'Book a table',
+    bookShort: 'Book',
     viewMenu: 'See the menu',
     call: 'Call',
     whatsapp: 'WhatsApp',
@@ -55,6 +57,9 @@ export const en: UIStrings = {
     print: 'Print menu',
     backHome: 'Back to the home page',
     backToTop: 'Back to top',
+  },
+  daily: {
+    label: 'Dish of the day',
   },
   about: {
     eyebrow: 'Our story',
@@ -124,13 +129,6 @@ export const en: UIStrings = {
     vat: 'Prices in euros, VAT included at the current legal rate.',
     allergens:
       'Do you have a food allergy or intolerance? Please tell us before ordering: allergen information is available for every dish.',
-    legend: 'Key',
-    tags: {
-      vegetarian: 'Vegetarian',
-      vegan: 'Vegan',
-      'gluten-free': 'Gluten-free',
-    },
-    printHeading: 'Menu',
   },
   privacy: {
     eyebrow: 'Legal information',

@@ -12,9 +12,11 @@ interface Props {
   lang: Locale;
   page: PageKey | null;
   class?: string;
+  /** Hide the globe icon on small phones, to save space in the header. */
+  compactOnMobile?: boolean;
 }
 
-const { lang, page, class: className } = Astro.props;
+const { lang, page, class: className, compactOnMobile = false } = Astro.props;
 const other = otherLocale(lang);
 const t = useTranslations(lang);
 const tOther = useTranslations(other);
@@ -34,11 +36,12 @@ for (const category of site.menu) hashMap[category.id] = category.id;
   data-lang-switch
   data-hash-map={JSON.stringify(hashMap)}
   class:list={[
-    'inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 font-bold tracking-wide text-ink hover:bg-primary-soft',
+    'inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-full px-3 font-bold tracking-wide text-ink hover:bg-primary-soft',
+    compactOnMobile && 'max-sm:px-2',
     className,
   ]}
 >
-  <Icon name="globe" size={18} />
+  <Icon name="globe" size={18} class={compactOnMobile ? 'max-sm:hidden' : undefined} />
   <span>{other.toUpperCase()}</span>
   <span class="sr-only">({t.a11y.otherLanguage})</span>
 </a>

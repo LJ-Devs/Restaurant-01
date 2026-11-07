@@ -9,9 +9,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "dev:sol": "cross-env SITE_CONFIG=pastelaria-sol astro dev",
     "build": "astro check && astro build",
-    "build:sol": "cross-env SITE_CONFIG=pastelaria-sol npm run build",
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro"
@@ -25,7 +23,6 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@types/node": "^24.19.2",
-    "cross-env": "^10.1.0",
     "typescript": "^6.0.3"
   }
 }

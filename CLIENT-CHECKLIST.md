@@ -25,7 +25,7 @@ A short message you can send to the client (in Portuguese) is at the end.
 - [ ] WhatsApp number (if they use it) and who answers it: `contact.whatsapp`
 - [ ] Public email address: `contact.email`
 - [ ] How do customers book or order? WhatsApp, phone, or an online booking page such as TheFork (link): `booking`
-- [ ] Button text if not "Reservar mesa" (e.g. "Encomendar bolo"): `booking.label`
+- [ ] Button text if not "Reservar mesa" (e.g. "Encomendar bolo"): `booking.label`, plus a short version for phones, 12 letters max (e.g. "Encomendar"): `booking.shortLabel`
 
 ## 3. Opening hours
 
@@ -50,9 +50,8 @@ A short message you can send to the client (in Portuguese) is at the end.
 - [ ] The current menu (photo or PDF of the printed menu is fine), split into categories (Entradas, Sopas, Peixe, Carne, Sobremesas, Bebidas…): `menu`
 - [ ] For each item: name, short description, **price with VAT**, and portions if any (meia dose / dose, copo / garrafa)
 - [ ] Items without a fixed price (e.g. fresh fish "preço ao kg" or "preço do dia")
-- [ ] Which items are **vegetarian**, **vegan** and **gluten-free**: confirm with the cook, these labels must be true: `tags`
 - [ ] Confirmation that allergen information is available on request (EU rule; the site shows a note about it)
-- [ ] Menu do dia / prato do dia: do they want it on the site? (It changes daily: usually better as a note, e.g. "Pergunte-nos pelo prato do dia".)
+- [ ] Menu do dia / prato do dia: do they want it on the site? If yes: name, details and price (`dailySpecial`), and agree how they tell you when it changes (e.g. a WhatsApp message). A fixed weekday lunch deal changes less often than a daily dish.
 - [ ] 4–6 **signature dishes** to feature on the home page (each needs a photo): `featuredDishes`
 - [ ] Short intro sentence for the menu page (optional): `menuIntro`
 
@@ -60,7 +59,7 @@ A short message you can send to the client (in Portuguese) is at the end.
 
 Ask for the **original files** (not screenshots, not photos sent through WhatsApp, which compresses them). Landscape photos are best.
 
-- [ ] 1 big photo for the top of the home page: the dining room, the façade or a table full of dishes. Landscape, at least 1600 px wide (ideally 2400 × 1600). Main subject in the centre: `images.hero`
+- [ ] 1 big photo for the top of the home page: the dining room, the façade or a table full of dishes. Landscape, at least 1600 px wide (ideally 2400 × 1600). Phones show only a tall strip of it: note if the main subject is on the left, centre or right (`images.hero.focus`): `images.hero`
 - [ ] 2–3 photos for "about us": the team, the kitchen, the room, details: `images.about`
 - [ ] 1 photo of each featured dish (and of other dishes if they have them). Landscape 4:3, about 1200 × 900, natural light: `photo`
 - [ ] Logo, if they have one: SVG or PNG with a transparent background: `images.logo`
@@ -115,7 +114,7 @@ Tips for photos taken with a phone: daylight near a window, no flash, clean tabl
 >
 > 1. **Dados**: nome do estabelecimento, nome da empresa e NIF, morada completa, telefone, WhatsApp (se usarem) e email.
 > 2. **Horário** de cada dia da semana (almoço e jantar), dias de encerramento e o que fazem nos feriados.
-> 3. **Menu** atual com preços (pode ser uma foto ou PDF), indicando os pratos vegetarianos, vegan e sem glúten.
+> 3. **Menu** atual com preços (pode ser uma foto ou PDF).
 > 4. **Fotografias** em boa qualidade (os ficheiros originais, não enviados pelo WhatsApp): uma da sala ou da fachada, 2 ou 3 da equipa ou da cozinha, e dos 4 a 6 pratos mais conhecidos. Se tiverem logótipo, enviem-no também.
 > 5. Um pequeno texto sobre a **vossa história** (quando abriram, quem são, o que vos distingue).
 > 6. Links do **Google** (perfil da empresa), **Instagram** e **Facebook**.

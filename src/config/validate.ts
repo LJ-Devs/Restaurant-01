@@ -102,6 +102,20 @@ export function validateConfig(site: SiteConfig): void {
   if (site.featuredDishes.length < 4 || site.featuredDishes.length > 6)
     warnings.push(`featuredDishes has ${site.featuredDishes.length} dishes; 4 to 6 looks best`);
 
+  // Dish of the day
+  const specialPrice = site.dailySpecial?.price;
+  if (specialPrice !== undefined && (!Number.isFinite(specialPrice) || specialPrice < 0))
+    errors.push(`dailySpecial.price is invalid (${specialPrice})`);
+
+  // Booking button on phones must stay short
+  for (const lang of ['pt', 'en'] as const) {
+    const shown = site.booking.shortLabel?.[lang] ?? site.booking.label?.[lang];
+    if (shown && shown.length > 12)
+      warnings.push(
+        `the booking button text "${shown}" is too long for phones: add a booking.shortLabel of 12 letters or less`,
+      );
+  }
+
   // Reviews
   if (site.reviews.rating < 0 || site.reviews.rating > 5) errors.push('reviews.rating must be between 0 and 5');
   if (site.reviews.featured.length < 3 || site.reviews.featured.length > 6)

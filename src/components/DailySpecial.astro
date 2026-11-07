@@ -1,0 +1,54 @@
+---
+/**
+ * "Prato do dia" / "Menu do dia" card, from `dailySpecial` in the client config.
+ * Shown at the top of the home page (with a link to the menu) and of the menu page.
+ * Renders nothing when `dailySpecial` is not set.
+ */
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { routes, useTranslations } from '~/i18n';
+import { formatPrice } from '~/lib/format';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Locale;
+  variant: 'home' | 'menu';
+  class?: string;
+}
+
+const { lang, variant, class: className } = Astro.props;
+const t = useTranslations(lang);
+const special = site.dailySpecial;
+---
+
+{
+  special && (
+    <section aria-labelledby="daily-special-title" class:list={['card relative overflow-hidden', className]}>
+      <div class="absolute inset-y-0 left-0 w-1.5 bg-accent print:hidden" aria-hidden="true" />
+      <div class="flex flex-col gap-4 py-5 pr-5 pl-7 sm:flex-row sm:items-center sm:justify-between sm:py-6 sm:pr-6 sm:pl-9 print:p-0">
+        <div class="min-w-0">
+          <p class="eyebrow">{special.label?.[lang] ?? t.daily.label}</p>
+          <h2 id="daily-special-title" class="mt-2 text-2xl sm:text-3xl print:text-[13pt]">
+            {special.name[lang]}
+          </h2>
+          {special.description && <p class="mt-1.5 text-muted print:text-[9.5pt]">{special.description[lang]}</p>}
+        </div>
+        {(special.price !== undefined || variant === 'home') && (
+          <div class="flex flex-none items-center gap-5 sm:flex-col sm:items-end sm:gap-3">
+            {special.price !== undefined && (
+              <p class="font-display text-3xl leading-none font-semibold whitespace-nowrap text-ink print:text-[13pt]">
+                {formatPrice(special.price)}
+              </p>
+            )}
+            {variant === 'home' && (
+              <a href={routes.menu[lang]} class="btn btn-outline">
+                {t.cta.viewMenu}
+                <Icon name="arrow" />
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}

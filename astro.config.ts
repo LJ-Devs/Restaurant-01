@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, fontProviders } from 'astro/config';
 
-// 1. Read a local `.env` file if there is one (e.g. `SITE_CONFIG=pastelaria-sol`).
+// 1. Read a local `.env` file if there is one (e.g. `SITE_CONFIG=cafe-central`).
 try {
   process.loadEnvFile();
 } catch {
@@ -18,11 +18,17 @@ type FontName = keyof typeof fontLibrary;
 
 /**
  * The public address of the site, used for links in Google and social media.
- * Priority: SITE_URL environment variable → Netlify's own address → `url` in the config.
+ * 1. SITE_URL environment variable, if set.
+ * 2. `url` in the config, once it is a real address.
+ * 3. While `url` is still an example.com placeholder (like the demos): the project's
+ *    own address on Vercel (e.g. https://tasca-do-largo.vercel.app).
  */
 function publicUrl(): string {
   if (process.env.SITE_URL) return process.env.SITE_URL;
-  if (process.env.NETLIFY === 'true' && process.env.URL) return process.env.URL;
+  const isPlaceholder = new URL(site.url).hostname.endsWith('example.com');
+  if (isPlaceholder && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
   return site.url;
 }
 

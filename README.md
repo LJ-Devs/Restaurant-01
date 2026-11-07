@@ -3,20 +3,16 @@
 A fast, bilingual (Portuguese/English) website for small restaurants and cafés in Portugal.
 You set up a new client by **editing one file, replacing the photos and publishing**.
 
-It comes with two **fictional** demo clients:
-
-| Demo | Type | Look |
-| --- | --- | --- |
-| **Tasca do Largo** (Coimbra) | Traditional restaurant | Azulejo blue, terracotta, Fraunces font |
-| **Pastelaria Sol** (Faro) | Café & pastry shop | Atlantic teal, sun yellow, Playfair Display font, logo, notice bar |
+It comes with a **fictional** demo client, **Tasca do Largo**, a traditional restaurant in Coimbra
+(azulejo blue, terracotta, Fraunces font).
 
 What every site includes:
 
-- Home page: photo header, story, featured dishes, reviews, opening hours with an **"Aberto agora / Fechado agora"** badge (Lisbon time), map, contacts.
-- Menu page with prices (`12,50 €`), portions (meia dose / dose), vegetarian / vegan / gluten-free labels, VAT and allergen notes, and a **print-friendly** version.
+- Home page: photo header, optional **dish/menu of the day**, story, featured dishes, reviews, opening hours with an **"Aberto agora / Fechado agora"** badge (Lisbon time), map, contacts.
+- Menu page with prices (`12,50 €`), portions (meia dose / dose), VAT and allergen notes, and a **print-friendly** version.
 - Privacy policy page, a "page not found" page.
 - European Portuguese at `/`, English at `/en/`. The language button keeps the visitor on the same page.
-- "Reservar mesa" button that opens WhatsApp with a ready-made message, and a "Ligar / WhatsApp" bar on phones.
+- "Reservar mesa" button (always visible, also on phones) that opens WhatsApp with a ready-made message, and a "Ligar / WhatsApp" bar on phones.
 - Footer with legal name, NIF, Livro de Reclamações Eletrónico link and privacy policy.
 - Google-friendly: structured data (`Restaurant`), sitemap, robots.txt, share images for WhatsApp/Facebook.
 - **No cookies, no trackers, no Google Fonts**: no cookie banner needed. The Google map only loads if the visitor clicks it.
@@ -26,9 +22,9 @@ What every site includes:
 
 ## 1. What you need (one time)
 
-1. **Node.js 24 (LTS)**: download it from <https://nodejs.org> and install it.
+1. **Node.js 24 or 26 (LTS)**: download the LTS version from <https://nodejs.org> and install it.
 2. **Visual Studio Code**: <https://code.visualstudio.com>. When you open this folder, accept the suggestion to install the **Astro** extension.
-3. Free accounts on **GitHub** and on **Netlify** or **Cloudflare** (only needed to publish).
+3. Accounts on **GitHub** and **Vercel** (only needed to publish; see section 9 about Vercel's plans).
 
 ## 2. Run the site on your computer
 
@@ -42,14 +38,11 @@ npm run dev      # starts the site
 Open <http://localhost:4321> in your browser. When you save a file, the page updates by itself.
 Press `Ctrl + C` in the terminal to stop.
 
-To see the second demo (Pastelaria Sol): `npm run dev:sol`.
-
 Other commands:
 
 | Command | What it does |
 | --- | --- |
 | `npm run build` | Checks everything and creates the final site in the `dist/` folder. **Always run this before publishing.** |
-| `npm run build:sol` | Same, for Pastelaria Sol. |
 | `npm run preview` | Shows the final site from `dist/`, exactly as it will be online. |
 
 ## 3. Where things are
@@ -58,7 +51,6 @@ Other commands:
 src/
 ├── config/
 │   ├── site.config.ts            ← THE CLIENT FILE: all texts, menu, hours, colours… (edit this)
-│   ├── pastelaria-sol.config.ts  ← second example client
 │   ├── fonts.ts                  ← list of fonts you can use
 │   ├── types.ts                  ← describes every field (do not edit)
 │   ├── validate.ts               ← checks the config when you build (do not edit)
@@ -71,8 +63,7 @@ src/
 ├── components/, layouts/, pages/ ← the design and pages (only for design changes)
 ├── scripts/main.ts               ← the little JavaScript of the site
 └── styles/global.css             ← global styles (Tailwind CSS)
-scripts/generate-placeholders.mjs ← draws the demo illustrations (not needed for clients)
-public/_headers                   ← security and cache settings for Netlify / Cloudflare
+vercel.json                       ← Vercel settings: build command, security headers, cache
 ```
 
 ## 4. Create a site for a new client (about 45 minutes)
@@ -91,7 +82,7 @@ Collect the information first with **[CLIENT-CHECKLIST.md](CLIENT-CHECKLIST.md)*
    - `Missing text at config.menu[2].items[0].description.en` → an English text is empty.
    - `photo not found: src/assets/images/cafe-central/hero.jpg` → check the file name.
    - `colour contrast too low for accent text on background` → the colour is too light to read; make it darker.
-8. **Publish** (sections 8–10).
+8. **Publish** (sections 9 and 10).
 
 Useful tips while filling in the config:
 
@@ -103,17 +94,19 @@ Useful tips while filling in the config:
 - **GPS coordinates**: in Google Maps, right-click the restaurant and click the numbers at the top to copy them (e.g. `40.2097, -8.4303`).
 - **Google reviews link**: in the Google Business Profile, click *Reviews* and copy the share link into `reviews.googleUrl`. Copy the average (`rating`) and number of reviews (`count`) by hand and update them from time to time.
 - **WhatsApp**: write the number with the country code: `'+351 912 345 678'`.
-- **Booking**: by default the button opens WhatsApp with `booking.message`. Use `booking.url` for an online booking page (e.g. TheFork), or `booking.label` to change the button text (Pastelaria Sol uses "Encomendar bolo").
+- **Booking**: by default the button opens WhatsApp with `booking.message`. Use `booking.url` for an online booking page (e.g. TheFork), or `booking.label` to change the button text (e.g. "Encomendar bolo" for a pastry shop). Phones show a short text ("Reservar"); if you change the label, also set `booking.shortLabel` (12 letters max, e.g. "Encomendar").
+- **Dish / menu of the day**: `dailySpecial` shows a card at the top of the home page and of the menu (name, details, price). Update it when it changes, or delete the block to hide it. A fixed lunch deal ("Menu do dia: sopa, prato, bebida e café") changes less often than a daily dish.
 - **Notice bar**: `notice` shows a coloured line at the top of every page ("Encerrado para férias de 1 a 15 de agosto"). Remove it when it no longer applies.
-- **RAL (consumer arbitration)**: only if the business is a member of an arbitration centre, fill in `legal.disputeResolution` (see Pastelaria Sol).
+- **Logo**: optional `images.logo` (SVG or transparent PNG). Without it, the name is written in the title font.
+- **RAL (consumer arbitration)**: only if the business is a member of an arbitration centre, fill in `legal.disputeResolution`, e.g. `{ name: 'CIMAAL, Centro de Informação, Mediação e Arbitragem de Conflitos de Consumo do Algarve', url: 'https://www.consumoalgarve.pt' }`.
 
 ### Several clients in one project (optional)
 
-You can also keep all clients in one project and publish each one as a separate Netlify/Cloudflare site:
+You can also keep all clients in one project and publish each one as a separate Vercel project:
 
 1. Copy `site.config.ts` to `src/config/<id>.config.ts` and fill it in; put the photos in `src/assets/images/<id>/`.
-2. Add it to the `configs` list in `src/config/index.ts` (copy how `pastelariaSol` is done).
-3. On the client's Netlify/Cloudflare site, add the environment variable `SITE_CONFIG = <id>`.
+2. Add it to the `configs` list in `src/config/index.ts` (the comment above the list shows how).
+3. In the client's Vercel project, add the environment variable `SITE_CONFIG = <id>`.
 
 Advantage: a design improvement reaches all clients at once. Disadvantage: every change must be tested for every client.
 
@@ -125,19 +118,20 @@ Put the client's photos in `src/assets/images/<id>/`. The easiest way: **use the
 | --- | --- | --- | --- |
 | Big photo at the top (hero) | `hero-mesa-petiscos.jpg` | landscape 3:2 | **2400 × 1600** (at least 1600 wide) |
 | About us, photo 1 | `sobre-tachos-ao-lume.jpg` | portrait 4:5 | **1200 × 1500** |
-| About us, photos 2 and 3 | `sobre-pao-azeite-vinho.jpg`, `sobre-mesa-posta.jpg` | landscape 4:3 | **1200 × 900** |
+| About us, photos 2 and 3 | `sobre-pao-e-azeite.jpg`, `sobre-mesa-posta.jpg` | landscape 4:3 | **1200 × 900** |
 | Dish photos (menu items) | `prato-….jpg`, `sobremesa-….jpg` | landscape 4:3 | **1200 × 900** |
 | Sharing image (WhatsApp, Facebook) | `partilha-redes-sociais.jpg` | 1.91:1 | **1200 × 630**, with the name or logo on it |
-| Logo (optional) | `logo-sol.svg` (Pastelaria Sol) | any | SVG, or PNG with transparent background, at least 160 px tall |
+| Logo (optional) | (none in the demo), e.g. `logo.svg` | any | SVG, or PNG with transparent background, at least 160 px tall |
 
 Good to know:
 
 - JPG, PNG or WebP are fine; phone photos are fine. When you build, Astro **resizes, crops and converts** them to modern formats (AVIF/WebP), and lazy-loads them. You don't need to make them small yourself (but under ~5 MB keeps builds quick).
-- Photos are **cropped automatically** to the shape above, from the centre. On phones the top photo is shown as a tall crop of its **centre**: keep the main subject in the middle.
+- Photos are **cropped automatically** to the shape above, from the centre.
+- On phones the top photo is shown as a **tall strip**. Choose which part with `images.hero.focus`: `'left'`, `'center'` (default) or `'right'`, the side where the main subject is (the demo uses `'right'` to keep the wine glass).
 - File names: lowercase, no spaces, no accents (`arroz-de-pato.jpg`, not `Arroz de Pato.JPG`). Names are case-sensitive.
 - The site icon (favicon) is generated automatically from the brand colour.
 - Write a short `alt` text for each photo in both languages, describing what is in it (for blind visitors and Google).
-- The demo pictures are **illustrations** made by `scripts/generate-placeholders.mjs`. Replace them with the client's real photos.
+- **Demo pictures:** the demo uses free stock photos from Pexels and Unsplash (sources in `src/assets/images/tasca-do-largo/CREDITS.md`). They are only for the demo: a real client's site must show **the client's own food**, otherwise customers are misled.
 
 Why the photos are in `src/assets/images/` and not in `public/images/`: Astro only optimises images that are inside `src/`. Files in `public/` are published as they are, so big phone photos would make the site slow.
 
@@ -153,54 +147,54 @@ Fraunces, Playfair Display, Lora (titles) and Source Sans 3, Nunito Sans, Figtre
 - Buttons, labels and notes: `src/i18n/pt.ts` (European Portuguese) and `src/i18n/en.ts`.
 - Privacy policy: `src/legal/privacy.pt.md` and `privacy.en.md`. Words in `{{double braces}}` are filled in from the config. **Review it with each client** (it is a template, not legal advice) and update the date at the top when you change it.
 
-## 8. Switch between configs
+## 8. Switch between configs (only with several clients in one project)
 
 | Where | How |
 | --- | --- |
-| On your computer | `npm run dev:sol` / `npm run build:sol`, or create a file named `.env` (copy `.env.example`) containing `SITE_CONFIG=pastelaria-sol` |
-| Netlify / Cloudflare | Add the environment variable `SITE_CONFIG` with the config `id` |
+| On your computer | Create a file named `.env` (copy `.env.example`) containing `SITE_CONFIG=<id>`, then restart `npm run dev` |
+| Vercel | Project → *Settings → Environment Variables*: add `SITE_CONFIG` with the config `id` |
 
 Without `SITE_CONFIG`, `src/config/site.config.ts` is used.
 
-## 9. Publish on Netlify (free)
+## 9. Publish on Vercel
 
-**With GitHub (recommended: updates are automatic)**
+**Which Vercel plan?** Vercel's free **Hobby** plan is only for personal, non-commercial use. Vercel counts
+"receiving payment to create, update, or host the site" as commercial use, so **client sites need the Pro
+plan** (US$20 per month per team member; one Pro team can host all your client projects). See
+<https://vercel.com/docs/limits/fair-use-guidelines#commercial-usage>. If you are unsure about your demos,
+ask Vercel support.
+
+**Steps (updates are automatic after this):**
 
 1. Put the project on GitHub (in VS Code: *Source Control → Publish to GitHub*).
-2. On <https://app.netlify.com>: **Add new project → Import an existing project → GitHub** (older screens say *Add new site*), and choose the repository.
-3. The settings are read from `netlify.toml` (build command `npm run build`, folder `dist`, Node 24). Click **Deploy**.
-4. After 1–2 minutes the site is online at an address like `https://your-name.netlify.app`. You can change the name in the project (site) configuration.
+2. On <https://vercel.com>: **Add New… → Project**, then **Import** the GitHub repository.
+3. The settings are read from `vercel.json` (framework Astro, build command `npm run build`, output folder `dist`). You don't need to change anything. Optionally add environment variables (e.g. `SITE_CONFIG`).
+4. Click **Deploy**. After 1–2 minutes the site is online at `https://<project-name>.vercel.app`.
 
-Every time you push a change to GitHub, Netlify publishes the new version automatically.
-To publish the second demo from the same repository, import it a second time and add the environment variable `SITE_CONFIG = pastelaria-sol` before deploying.
+Every push to the main branch publishes a new version. Other branches get a private *preview* address, useful to show changes to the owner before they go live.
 
-**Without GitHub (quick test):** run `npm run build`, then drag the `dist` folder onto <https://app.netlify.com/drop>. You will have to drag it again after every change.
+Good to know:
 
-## 10. Publish on Cloudflare Pages (free)
+- **Node.js version:** Vercel uses the newest version allowed by `engines.node` in `package.json` (currently Node 26). You don't need to set it.
+- **Another client from the same repository** (see "Several clients in one project"): import the repository again as a new project and add the environment variable `SITE_CONFIG = <id>` before the first deploy.
+- **Public address:** while `url` in the config is still an `example.com` placeholder (as in the demo), the site uses the project's Vercel address for Google and share previews. Once you write the real address in `url`, that one is used.
+- The site is plain static files (`dist/`), so it also runs on other static hosts if you ever move.
 
-1. Put the project on GitHub.
-2. On <https://dash.cloudflare.com>: **Workers & Pages → Create → Pages → Connect to Git**, and choose the repository. (Cloudflare changes its menus from time to time; look for the option to deploy a Pages site from Git.)
-3. Framework preset: **Astro**. Build command: `npm run build`. Build output directory: `dist`.
-4. Environment variables: `NODE_VERSION = 24` (and `SITE_CONFIG` if needed).
-5. Click **Save and Deploy**. The site appears at `https://your-name.pages.dev`.
-
-Important on Cloudflare: set `url` in the config to the final address (e.g. `https://your-name.pages.dev` or the client's domain). Cloudflare does not tell the build the public address, and Google and WhatsApp previews use it. Netlify does this automatically.
-
-## 11. Connect the client's domain (e.g. `www.restaurante.pt`)
+## 10. Connect the client's domain (e.g. `www.restaurante.pt`)
 
 The client keeps ownership of the domain. A `.pt` domain is bought from a registrar accredited by DNS.pt (for example PTisp, Amen or Dominios.pt). You need access to its **DNS settings**.
 
-**Netlify:** *Domain management → Add a domain*, type the domain, and follow the instructions. Netlify shows the exact records to add at the registrar (usually a `CNAME` for `www` and an `A` record for the domain without `www`). Or move the DNS to Netlify (Netlify DNS), the simplest option. HTTPS (the padlock) is added automatically for free.
-
-**Cloudflare Pages:** open the project → *Custom domains → Set up a custom domain*, and follow the steps. It is easiest if the domain's DNS is managed by Cloudflare (add the domain to your Cloudflare account and change the nameservers at the registrar).
+1. In the Vercel project: *Settings → Domains → Add*, type `www.restaurante.pt` and also `restaurante.pt`. Choose to **redirect** one to the other (most sites use `www` as the main address).
+2. Vercel shows the exact DNS records to add at the registrar (an `A` record for the domain without `www` and a `CNAME` for `www`). Add them there. Alternatively, point the domain's nameservers to Vercel.
+3. HTTPS (the padlock) is added automatically for free.
 
 DNS changes can take a few minutes to a few hours. When the domain works:
 
-1. Set `url` in the config to the new address (e.g. `'https://www.restaurante.pt'`) and publish again.
+1. Set `url` in the config to the main address (e.g. `'https://www.restaurante.pt'`) and publish again.
 2. Add the site to **Google Search Console** (<https://search.google.com/search-console>) and submit `https://www.restaurante.pt/sitemap.xml`.
 3. Put the website link in the client's **Google Business Profile**, Instagram and Facebook.
 
-## 12. Before showing a site to a client or going live
+## 11. Before showing a site to a client or going live
 
 - `npm run build` shows no errors or warnings.
 - `isDemo` is `false`, `url` is correct, phone, WhatsApp and email work (tap them on a phone).
@@ -209,19 +203,20 @@ DNS changes can take a few minutes to a few hours. When the domain works:
 - Test on a phone, and run Lighthouse (Chrome → DevTools → Lighthouse) or <https://pagespeed.web.dev>.
 - The client is registered on the **Livro de Reclamações Eletrónico** (<https://www.livroreclamacoes.pt>); the footer link points to it.
 
-## 13. Monthly maintenance (ideas for your subscription)
+## 12. Monthly maintenance (ideas for your subscription)
 
 Update opening hours and holiday closures (`notice`), menu and prices, the Google rating and number of reviews, seasonal photos, and the privacy policy date if it changes. Edit, run `npm run build`, push to GitHub: the host publishes the new version automatically.
 
-## 14. Problems?
+## 13. Problems?
 
 | Problem | Solution |
 | --- | --- |
-| `npm` is not recognised | Install Node.js 24 and open a new terminal. |
-| `The engine "node" is incompatible` | Your Node.js is too old. Install Node.js 24 LTS. |
+| `npm` is not recognised | Install Node.js (LTS) and open a new terminal. |
+| `The engine "node" is incompatible` | Your Node.js is too old. Install the current LTS version (24 or 26). |
 | Port 4321 is in use | Another copy of the site is running. Stop it with `Ctrl + C`, or use the address shown in the terminal. |
 | The build lists problems in the config | Read each line: it says which field and what is wrong. |
 | A photo looks badly cropped | Use a photo closer to the recommended shape, with the subject in the centre. |
+| I replaced a photo but still see the old one | Your browser kept the old copy. Press `Ctrl + F5` (Mac: `Cmd + Shift + R`) once. If it stays, stop `npm run dev` and start it again. |
 | The share preview on WhatsApp/Facebook shows an old image | They keep a copy for a while. Use <https://developers.facebook.com/tools/debug/> to refresh it. |
 
 ---
@@ -230,11 +225,12 @@ Update opening hours and holiday closures (`notice`), menu and prices, the Googl
 
 - **Stack:** Astro 7 (static output), Tailwind CSS 4 (`@tailwindcss/vite`), TypeScript (strict). `npm run build` runs `astro check` first.
 - **Config:** `src/config/index.ts` picks the config from `SITE_CONFIG` and validates it at build time (`validate.ts`). `astro.config.ts` loads the same config to set `site`, the fonts and the `@client-images` alias, so only the active client's photos are bundled.
-- **Public URL:** `SITE_URL` env var → Netlify's `URL` env var (when building on Netlify) → `url` in the config.
+- **Public URL:** `SITE_URL` env var → `url` in the config → while `url` is an `example.com` placeholder, Vercel's `VERCEL_PROJECT_PRODUCTION_URL`.
 - **Fonts:** Astro Fonts API with the `local` provider (files in `src/assets/fonts/`, metric-matched fallbacks, preloaded).
 - **Images:** `astro:assets` `<Picture>` (AVIF + WebP, `srcset`, lazy loading, width/height). The hero is art-directed: a 2:3 crop for phones, 3:2 for larger screens, high fetch priority.
 - **i18n:** explicit routes (`src/pages/` and `src/pages/en/`), route map in `src/i18n/index.ts`, `hreflang` alternates in the `<head>` and in `sitemap.xml`.
 - **JavaScript:** one small module (`src/scripts/main.ts`): mobile menu (`<details>`, works without JS), language switch keeping the section anchor, open-now badge (`Intl` with `Europe/Lisbon`, run when the browser is idle), click-to-load map, menu tab highlighting, print button.
 - **SEO:** JSON-LD `Restaurant`/`Bakery` with address, geo, opening hours, menu URL, cuisine, price range and phone. Reviews are deliberately not in the structured data (Google ignores self-published reviews of a business).
-- **Headers:** `public/_headers` (security headers + one-year cache for `/_astro/*`) works on Netlify and Cloudflare Pages.
+- **Dev image cache:** `src/middleware.ts` sends `Cache-Control: no-cache` for `/_image` during `npm run dev`, so a photo replaced under the same file name shows up immediately (no effect on the built site).
+- **Hosting:** `vercel.json` (framework, build command, `trailingSlash: true`, security headers, one-year cache for `/_astro/*`). Vercel serves `dist/404.html` for unknown pages.
 - **Fonts licence:** SIL Open Font License, see `src/assets/fonts/licenses/`.

@@ -18,15 +18,8 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const document = lang === 'pt' ? privacyPt : privacyEn;
 
-// Hosting company, detected when building on Netlify or Cloudflare Pages.
-const hosting =
-  process.env.NETLIFY === 'true'
-    ? 'Netlify, Inc.'
-    : process.env.CF_PAGES === '1'
-      ? 'Cloudflare, Inc.'
-      : lang === 'pt'
-        ? 'Netlify, Inc. ou Cloudflare, Inc.'
-        : 'Netlify, Inc. or Cloudflare, Inc.';
+// Company that hosts the site (named in the policy). Change it if you host elsewhere.
+const hosting = 'Vercel Inc.';
 
 const escapeHtml = (text: string) =>
   text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

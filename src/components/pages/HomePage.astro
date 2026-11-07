@@ -2,6 +2,7 @@
 import { getImage } from 'astro:assets';
 import About from '~/components/About.astro';
 import Contact from '~/components/Contact.astro';
+import DailySpecial from '~/components/DailySpecial.astro';
 import FeaturedDishes from '~/components/FeaturedDishes.astro';
 import Hero from '~/components/Hero.astro';
 import Hours from '~/components/Hours.astro';
@@ -34,6 +35,13 @@ const jsonLd = businessJsonLd(site, lang, siteUrl, [new URL(hero.src, siteUrl).h
 
 <BaseLayout lang={lang} page="home" title={site.seo.title[lang]} description={site.seo.description[lang]} jsonLd={jsonLd}>
   <Hero lang={lang} />
+  {
+    site.dailySpecial && (
+      <div class="container-site pt-10 sm:pt-14">
+        <DailySpecial lang={lang} variant="home" />
+      </div>
+    )
+  }
   <About lang={lang} />
   <FeaturedDishes lang={lang} />
   <Reviews lang={lang} />

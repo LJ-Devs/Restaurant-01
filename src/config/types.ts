@@ -44,9 +44,6 @@ export interface Shift {
  */
 export type WeeklyHours = Record<Weekday, Shift[]>;
 
-/** Dietary labels shown next to menu items. */
-export type DietaryTag = 'vegetarian' | 'vegan' | 'gluten-free';
-
 /**
  * A photo stored in `src/assets/images/<id>/` (where `<id>` is the config `id`).
  * `src` is only the file name, e.g. `'hero-sala.jpg'`.
@@ -79,7 +76,6 @@ export interface MenuItem {
   priceNote?: LocalizedText;
   /** Optional photo. Required if the item is listed in `featuredDishes`. */
   photo?: Photo;
-  tags?: DietaryTag[];
 }
 
 export interface MenuCategory {
@@ -188,6 +184,8 @@ export interface SiteConfig {
   booking: {
     /** Override the button text (default: "Reservar mesa" / "Book a table"). */
     label?: LocalizedText;
+    /** Short button text for phones, where space is tight (default: "Reservar" / "Book"). Max ~10 letters. */
+    shortLabel?: LocalizedText;
     /** Message that is pre-filled in WhatsApp. */
     message: LocalizedText;
     /** Use an online booking page (e.g. TheFork) instead of WhatsApp. */
@@ -200,6 +198,21 @@ export interface SiteConfig {
 
   /** Optional short text at the top of the menu page. */
   menuIntro?: LocalizedText;
+  /**
+   * Optional dish (or lunch menu) of the day, shown at the top of the home page and of the menu.
+   * Update it when it changes, or remove it.
+   * Example: `{ label: { pt: 'Menu do dia', en: 'Lunch menu' }, name: { pt: 'Feijoada', en: 'Bean stew' }, price: 12.5 }`
+   */
+  dailySpecial?: {
+    /** Small title (default: "Prato do dia" / "Dish of the day"). */
+    label?: LocalizedText;
+    /** What it is, e.g. "Feijoada à transmontana". */
+    name: LocalizedText;
+    /** Optional details, e.g. "Inclui sopa, bebida e café. De terça a sexta, ao almoço." */
+    description?: LocalizedText;
+    /** Price in euros (12.5 is shown as "12,50 €"). */
+    price?: number;
+  };
   menu: MenuCategory[];
   /** 4 to 6 menu item ids to show on the home page. Each must have a photo. */
   featuredDishes: string[];
@@ -223,7 +236,13 @@ export interface SiteConfig {
 
   images: {
     /** Big photo at the top. Recommended 2400×1600 (landscape 3:2). */
-    hero: Photo;
+    hero: Photo & {
+      /**
+       * Phones show a tall strip of the photo. Choose which part: 'left', 'center' (default) or 'right'.
+       * Pick the side where the main subject (a plate, a glass…) is.
+       */
+      focus?: 'left' | 'center' | 'right';
+    };
     /** 2 or 3 photos for the "about us" section. First: portrait 1200×1500; others: 1200×900. */
     about: Photo[];
     /** Image shown when the site is shared on WhatsApp/Facebook. 1200×630. File name only. */

@@ -17,6 +17,7 @@ export const pt = {
   a11y: {
     skipToContent: 'Saltar para o conteúdo',
     mainNav: 'Navegação principal',
+    mobileNav: 'Navegação do site',
     openMenu: 'Abrir menu',
     closeMenu: 'Fechar menu',
     otherLanguage: 'English version',
@@ -45,6 +46,7 @@ export const pt = {
   },
   cta: {
     book: 'Reservar mesa',
+    bookShort: 'Reservar',
     viewMenu: 'Ver menu',
     call: 'Ligar',
     whatsapp: 'WhatsApp',
@@ -54,6 +56,9 @@ export const pt = {
     print: 'Imprimir menu',
     backHome: 'Voltar à página inicial',
     backToTop: 'Voltar ao topo',
+  },
+  daily: {
+    label: 'Prato do dia',
   },
   about: {
     eyebrow: 'A nossa história',
@@ -127,13 +132,6 @@ export const pt = {
     vat: 'Preços em euros, com IVA incluído à taxa legal em vigor.',
     allergens:
       'Tem alguma alergia ou intolerância alimentar? Informe-nos antes de pedir: temos disponível a informação sobre os alergénios de todos os pratos.',
-    legend: 'Legenda',
-    tags: {
-      vegetarian: 'Vegetariano',
-      vegan: 'Vegan',
-      'gluten-free': 'Sem glúten',
-    },
-    printHeading: 'Menu',
   },
   privacy: {
     eyebrow: 'Informação legal',

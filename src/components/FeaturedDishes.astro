@@ -3,7 +3,6 @@ import { site } from '~/config';
 import type { Locale, MenuItem } from '~/config/types';
 import { fill, routes, useTranslations } from '~/i18n';
 import { formatPrice, lowestPrice } from '~/lib/format';
-import DietaryTags from './DietaryTags.astro';
 import Icon from './Icon.astro';
 import Photo from './Photo.astro';
 import SectionHeading from './SectionHeading.astro';
@@ -58,7 +57,6 @@ function priceLabel(item: MenuItem): string | undefined {
                 <p class="pt-1 text-lg font-bold whitespace-nowrap text-accent">{priceLabel(item)}</p>
               </div>
               {item.description && <p class="text-muted">{item.description[lang]}</p>}
-              <DietaryTags tags={item.tags} lang={lang} class="mt-auto pt-2" />
             </div>
           </li>
         ))

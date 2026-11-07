@@ -29,13 +29,15 @@ const links = [
 ];
 
 const bookLabel = site.booking.label?.[lang] ?? t.cta.book;
+// Phones have little room: short text ("Reservar") unless the config says otherwise.
+const bookShortLabel = site.booking.shortLabel?.[lang] ?? site.booking.label?.[lang] ?? t.cta.bookShort;
 const bookHref = bookingHref(site, lang);
 const logo = site.images.logo;
 const logoImage = logo ? await loadImage(logo.src) : undefined;
 ---
 
 <header class="site-header no-print sticky top-0 z-40 border-b border-line bg-bg">
-  <div class="container-site flex h-16 items-center gap-2 lg:h-20 lg:gap-4">
+  <div class="container-site flex h-16 items-center gap-1 sm:gap-2 lg:h-20 lg:gap-4">
     <a
       href={home}
       class="mr-auto flex min-h-11 min-w-0 items-center gap-2.5 rounded-lg text-ink no-underline"
@@ -55,7 +57,7 @@ const logoImage = logo ? await loadImage(logo.src) : undefined;
       }
       {
         !logo?.includesName && (
-          <span class="truncate font-display text-[1.3rem] font-semibold leading-none tracking-tight sm:text-2xl">
+          <span class="truncate font-display text-[1.15rem] font-semibold leading-none tracking-tight xs:text-[1.3rem] sm:text-2xl">
             {site.name}
           </span>
         )
@@ -82,10 +84,17 @@ const logoImage = logo ? await loadImage(logo.src) : undefined;
       </ul>
     </nav>
 
-    <LanguageSwitcher lang={lang} page={page} />
+    <LanguageSwitcher lang={lang} page={page} compactOnMobile />
 
-    <a href={bookHref} class="btn btn-primary hidden md:inline-flex" target="_blank" rel="noopener">
-      {bookLabel}<span class="sr-only"> {t.a11y.newTab}</span>
+    <a
+      href={bookHref}
+      class="btn btn-primary max-md:min-h-10 max-md:px-3.5 max-md:text-[0.95rem]"
+      target="_blank"
+      rel="noopener"
+    >
+      <span class="md:hidden">{bookShortLabel}</span>
+      <span class="hidden md:inline">{bookLabel}</span>
+      <span class="sr-only"> {t.a11y.newTab}</span>
     </a>
 
     <details class="group lg:hidden" data-mobile-nav>
@@ -97,7 +106,7 @@ const logoImage = logo ? await loadImage(logo.src) : undefined;
         <span class="sr-only">{t.nav.menu}</span>
       </summary>
       <div class="absolute inset-x-0 top-full max-h-[calc(100svh_-_4rem)] overflow-y-auto border-b border-line bg-bg shadow-xl">
-        <nav aria-label={t.a11y.mainNav} class="container-site py-4">
+        <nav aria-label={t.a11y.mobileNav} class="container-site py-4">
           <ul class="divide-y divide-line">
             {
               links.map((link) => (

@@ -1,8 +1,7 @@
 ---
 /**
  * Sticky bar at the bottom of the screen on phones: "Ligar" and "WhatsApp".
- * On phones the header has no room for the booking button, so the WhatsApp
- * button sends the same pre-filled booking message.
+ * WhatsApp opens a normal chat; booking has its own button in the header.
  */
 import { site } from '~/config';
 import type { Locale } from '~/config/types';
@@ -17,7 +16,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const whatsapp = site.contact.whatsapp;
-const whatsappLink = whatsapp ? whatsappHref(whatsapp, site.booking.url ? undefined : site.booking.message[lang]) : undefined;
+const whatsappLink = whatsapp ? whatsappHref(whatsapp) : undefined;
 ---
 
 <nav

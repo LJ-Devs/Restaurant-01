@@ -21,6 +21,11 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const image = await loadImage(site.images.hero.src);
 
+// Which part of the photo phones show (config: images.hero.focus).
+const focus = site.images.hero.focus ?? 'center';
+const cropPosition = { left: 'left', center: 'centre', right: 'right' }[focus];
+const objectPosition = { left: 'object-left', center: 'object-center', right: 'object-right' }[focus];
+
 const phone = { media: '(max-width: 47.99rem)', width: 1080, height: 1620, widths: [540, 720, 900, 1080] };
 const wide = { width: 2400, height: 1600, widths: [960, 1280, 1600, 1920, 2400] };
 
@@ -33,6 +38,7 @@ for (const crop of [phone, wide]) {
       width: crop.width,
       height: crop.height,
       widths: crop.widths,
+      position: cropPosition,
       // The photo sits under a dark gradient, so a lower quality is invisible and loads faster.
       quality: format === 'avif' ? 50 : 60,
     });
@@ -57,7 +63,7 @@ const fallback = await getImage({ src: image, format: 'jpg', width: 1600, height
       fetchpriority="high"
       loading="eager"
       decoding="async"
-      class="absolute inset-0 -z-20 size-full object-cover"
+      class:list={['absolute inset-0 -z-20 size-full object-cover', objectPosition]}
     />
   </picture>
   <div
