@@ -1,0 +1,334 @@
+@import "tailwindcss";
+
+/*
+ * Brand colours and fonts come from the client config (theme.colors / theme.fonts).
+ * BaseLayout.astro writes them as CSS variables (--brand-*), and <Font /> defines
+ * --font-heading and --font-body. Everything below is derived from those values,
+ * so restyling a client only means changing the config.
+ */
+
+@theme inline {
+  --color-primary: var(--brand-primary);
+  --color-primary-strong: color-mix(in oklab, var(--brand-primary) 78%, black);
+  --color-primary-soft: color-mix(in oklab, var(--brand-primary) 8%, white);
+  --color-on-primary: var(--brand-on-primary);
+  --color-accent: var(--brand-accent);
+  --color-accent-soft: color-mix(in oklab, var(--brand-accent) 10%, var(--brand-bg));
+  --color-bg: var(--brand-bg);
+  --color-surface: var(--brand-surface);
+  --color-ink: var(--brand-text);
+  --color-muted: var(--brand-muted);
+  --color-dark: var(--brand-dark);
+  --color-line: color-mix(in oklab, var(--brand-text) 14%, var(--brand-bg));
+  --color-open: #146c43;
+  --color-closed: #a4262c;
+
+  --font-display: var(--font-heading), Georgia, serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+
+  --breakpoint-xs: 26rem;
+}
+
+:root {
+  /* A Portuguese tile (azulejo) motif, used as a mask so it takes the brand colour. */
+  --azulejo-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='%23000'%3E%3Cpath d='M32 13c3.6 5.4 3.6 10.8 0 16.2-3.6-5.4-3.6-10.8 0-16.2zM32 51c-3.6-5.4-3.6-10.8 0-16.2 3.6 5.4 3.6 10.8 0 16.2zM13 32c5.4-3.6 10.8-3.6 16.2 0-5.4 3.6-10.8 3.6-16.2 0zM51 32c-5.4 3.6-10.8 3.6-16.2 0 5.4-3.6 10.8-3.6 16.2 0z'/%3E%3Ccircle cx='32' cy='32' r='2.6'/%3E%3Cpath d='M19.3 19.3c4.4.4 7 2.4 8 6.2-3.8-1-5.8-3.6-8-6.2zM44.7 19.3c-.4 4.4-2.4 7-6.2 8 1-3.8 3.6-5.8 6.2-8zM44.7 44.7c-4.4-.4-7-2.4-8-6.2 3.8 1 5.8 3.6 8 6.2zM19.3 44.7c.4-4.4 2.4-7 6.2-8-1 3.8-3.6 5.8-6.2 8z'/%3E%3Cpath d='M0 11.5A11.5 11.5 0 0 0 11.5 0H8.3A8.3 8.3 0 0 1 0 8.3zM64 11.5A11.5 11.5 0 0 1 52.5 0h3.2A8.3 8.3 0 0 0 64 8.3zM0 52.5A11.5 11.5 0 0 1 11.5 64H8.3A8.3 8.3 0 0 0 0 55.7zM64 52.5A11.5 11.5 0 0 0 52.5 64h3.2a8.3 8.3 0 0 1 8.3-8.3z'/%3E%3Cpath d='M0 0h4.6A4.6 4.6 0 0 1 0 4.6zM64 0v4.6A4.6 4.6 0 0 1 59.4 0zM0 64v-4.6A4.6 4.6 0 0 1 4.6 64zM64 64h-4.6a4.6 4.6 0 0 1 4.6-4.6z'/%3E%3Cpath d='M27.5 0 32 5.2 36.5 0zM27.5 64 32 58.8 36.5 64zM0 27.5 5.2 32 0 36.5zM64 27.5 58.8 32 64 36.5z'/%3E%3C/g%3E%3C/svg%3E");
+  /* One star of the rating (see .stars). */
+  --star-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.6l2.9 6 6.5.8-4.8 4.5 1.2 6.5L12 17.3l-5.8 3.1 1.2-6.5L2.6 9.4l6.5-.8z'/%3E%3C/svg%3E");
+  /* Small flower used before the section "eyebrow" titles. */
+  --azulejo-flower: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='%23000'%3E%3Cpath d='M12 1c2.6 3.4 2.6 6.8 0 10.2C9.4 7.8 9.4 4.4 12 1zM12 23c-2.6-3.4-2.6-6.8 0-10.2 2.6 3.4 2.6 6.8 0 10.2zM1 12c3.4-2.6 6.8-2.6 10.2 0-3.4 2.6-6.8 2.6-10.2 0zM23 12c-3.4 2.6-6.8 2.6-10.2 0 3.4-2.6 6.8-2.6 10.2 0z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+@layer base {
+  html {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 5.5rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    min-height: 100svh;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  /* Visible keyboard focus everywhere. Dark sections switch the ring to white. */
+  :focus-visible {
+    outline: 3px solid var(--focus-ring, var(--color-primary));
+    outline-offset: 3px;
+    border-radius: 0.375rem;
+  }
+}
+
+@layer components {
+  .on-dark {
+    --focus-ring: #ffffff;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: 0.75rem;
+    z-index: 100;
+    transform: translateY(-200%);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    box-shadow: 0 6px 24px rgb(0 0 0 / 0.18);
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+
+  /* Buttons: at least 48px tall, easy to tap. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.375rem;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-strong);
+  }
+
+  .btn-outline {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--color-primary-soft);
+  }
+
+  .btn-light {
+    background-color: #ffffff;
+    color: var(--color-dark);
+  }
+
+  .btn-light:hover {
+    background-color: color-mix(in oklab, #ffffff 86%, var(--brand-primary));
+  }
+
+  .btn-ghost-light {
+    border-color: rgb(255 255 255 / 0.85);
+    color: #ffffff;
+  }
+
+  .btn-ghost-light:hover {
+    background-color: rgb(255 255 255 / 0.14);
+  }
+
+  /* Small uppercase title above section headings, with an azulejo flower. */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 0.9rem;
+    height: 0.9rem;
+    flex: none;
+    background-color: currentColor;
+    -webkit-mask: var(--azulejo-flower) center / contain no-repeat;
+    mask: var(--azulejo-flower) center / contain no-repeat;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 1.3rem + 3vw, 3.25rem);
+    color: var(--color-ink);
+  }
+
+  /* A strip of azulejo tiles in the brand colour. */
+  .azulejo-band {
+    height: 1.75rem;
+    background-color: var(--color-primary);
+    -webkit-mask: var(--azulejo-tile) repeat-x center / 1.75rem 1.75rem;
+    mask: var(--azulejo-tile) repeat-x center / 1.75rem 1.75rem;
+  }
+
+  /* A very light azulejo pattern behind a whole section. */
+  .azulejo-wash {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .azulejo-wash::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--azulejo-wash-color, var(--color-primary));
+    opacity: var(--azulejo-wash-opacity, 0.06);
+    -webkit-mask: var(--azulejo-tile) repeat 0 0 / 4.5rem 4.5rem;
+    mask: var(--azulejo-tile) repeat 0 0 / 4.5rem 4.5rem;
+    pointer-events: none;
+  }
+
+  /* Star rating: 5 stars drawn with a mask, filled up to --stars-fill. */
+  .stars {
+    display: inline-block;
+    flex: none;
+    width: calc(var(--star-size, 20px) * 5);
+    height: var(--star-size, 20px);
+    background: linear-gradient(
+      90deg,
+      var(--color-accent) var(--stars-fill, 100%),
+      color-mix(in oklab, var(--color-ink) 18%, transparent) var(--stars-fill, 100%)
+    );
+    -webkit-mask: var(--star-shape) repeat-x left center / var(--star-size, 20px) var(--star-size, 20px);
+    mask: var(--star-shape) repeat-x left center / var(--star-size, 20px) var(--star-size, 20px);
+  }
+
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 1.25rem;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.12);
+  }
+
+  .prose-site p + p {
+    margin-top: 1rem;
+  }
+
+  .prose-site h2 {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prose-site h3 {
+    font-size: 1.2rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose-site ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin-block: 0.75rem;
+  }
+
+  .prose-site li + li {
+    margin-top: 0.4rem;
+  }
+
+  .prose-site a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  .prose-site strong {
+    font-weight: 700;
+  }
+}
+
+@utility container-site {
+  width: 100%;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (min-width: 40rem) {
+    padding-inline: 2rem;
+  }
+}
+
+/* ---------- Print (mainly the menu page) ---------- */
+@media print {
+  @page {
+    margin: 14mm 14mm 16mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 10.5pt;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+
+  .card {
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+}

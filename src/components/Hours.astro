@@ -1,0 +1,94 @@
+---
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { useTranslations } from '~/i18n';
+import { toSchedule, WEEKDAYS } from '~/lib/hours';
+import OpenStatus from './OpenStatus.astro';
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Data for the "open now" script (src/scripts/main.ts)
+const hoursData = JSON.stringify({
+  schedule: toSchedule(site.hours),
+  weekdaysOn: t.weekdaysOn,
+  strings: {
+    openNow: t.hours.openNow,
+    closedNow: t.hours.closedNow,
+    closesAt: t.hours.closesAt,
+    opensAt: t.hours.opensAt,
+    opensTomorrow: t.hours.opensTomorrow,
+    opensOn: t.hours.opensOn,
+  },
+});
+---
+
+<section id={t.sectionIds.hours} aria-labelledby="hours-title">
+  <SectionHeading id="hours-title" eyebrow={t.hours.eyebrow} title={t.hours.title} compact />
+
+  <div class="card mt-8 overflow-hidden">
+    <div class="flex min-h-14 items-center border-b border-line px-5 py-3">
+      <OpenStatus lang={lang} variant="card" />
+    </div>
+    <table class="w-full border-collapse text-left">
+      <caption class="sr-only">{t.hours.title}</caption>
+      <thead class="sr-only">
+        <tr>
+          <th scope="col">{t.hours.day}</th>
+          <th scope="col">{t.hours.time}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          WEEKDAYS.map((day, index) => {
+            const shifts = site.hours[day];
+            return (
+              <tr data-day={index} class="border-b border-line last:border-b-0 aria-[current=date]:bg-primary-soft">
+                <th scope="row" class="px-5 py-3.5 align-top font-semibold">
+                  <span class="flex flex-wrap items-center gap-2">
+                    {t.weekdays[index]}
+                    <span
+                      data-today-label
+                      hidden
+                      class="rounded-full bg-primary px-2 py-0.5 text-xs font-bold tracking-wide text-on-primary uppercase"
+                    >
+                      {t.hours.today}
+                    </span>
+                  </span>
+                </th>
+                <td class="px-5 py-3.5 text-right align-top tabular-nums">
+                  {shifts.length === 0 ? (
+                    <span class="font-semibold text-muted">{t.hours.closed}</span>
+                  ) : (
+                    <span class="flex flex-col items-end gap-0.5 sm:flex-row sm:justify-end sm:gap-0">
+                      {shifts.map((shift, i) => (
+                        <span>
+                          {i > 0 && (
+                            <span class="hidden px-2 text-muted sm:inline" aria-hidden="true">
+                              ·
+                            </span>
+                          )}
+                          {shift.open}–{shift.close}
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                </td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="mt-4 text-[0.95rem] text-muted">
+    {site.hoursNote && <>{site.hoursNote[lang]} </>}{t.hours.timezone}
+  </p>
+
+  <script is:inline type="application/json" id="hours-data" set:html={hoursData} />
+</section>

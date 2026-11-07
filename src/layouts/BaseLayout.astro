@@ -1,0 +1,123 @@
+---
+/**
+ * Page frame shared by every page: <head> (SEO, social sharing, fonts, colours),
+ * header, footer and the mobile contact bar.
+ */
+import '~/styles/global.css';
+import { Font, getImage } from 'astro:assets';
+import Footer from '~/components/Footer.astro';
+import Header from '~/components/Header.astro';
+import MobileBar from '~/components/MobileBar.astro';
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { otherLocale, routes, useTranslations, type PageKey } from '~/i18n';
+import { loadImage } from '~/lib/images';
+
+interface Props {
+  lang: Locale;
+  /** Which page this is (used for links to the other language). `null` for the 404 page. */
+  page: PageKey | null;
+  title: string;
+  description: string;
+  /** Structured data for Google (JSON-LD). */
+  jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
+}
+
+const { lang, page, title, description, jsonLd, noindex = false } = Astro.props;
+const t = useTranslations(lang);
+const tOther = useTranslations(otherLocale(lang));
+const siteUrl = Astro.site ?? new URL(site.url);
+
+const canonical = page ? new URL(routes[page][lang], siteUrl).href : undefined;
+const alternates = page
+  ? [
+      { hreflang: 'pt-PT', href: new URL(routes[page].pt, siteUrl).href },
+      { hreflang: 'en', href: new URL(routes[page].en, siteUrl).href },
+      { hreflang: 'x-default', href: new URL(routes[page].pt, siteUrl).href },
+    ]
+  : [];
+
+// Image shown when the page is shared (WhatsApp, Facebook…): 1200×630 JPEG.
+const share = await getImage({
+  src: await loadImage(site.images.share),
+  width: 1200,
+  height: 630,
+  format: 'jpg',
+  quality: 80,
+});
+const shareUrl = new URL(share.src, siteUrl).href;
+const shareAlt = `${site.name}: ${site.tagline[lang]}`;
+
+// Brand colours from the config, as CSS variables (see src/styles/global.css).
+const c = site.theme.colors;
+const themeCss = `:root{--brand-primary:${c.primary};--brand-on-primary:${c.onPrimary};--brand-accent:${c.accent};--brand-bg:${c.background};--brand-surface:${c.surface};--brand-text:${c.text};--brand-muted:${c.muted};--brand-dark:${c.dark}}`;
+
+// JSON is put inside a <script>: make sure no text can close that tag early.
+const jsonLdText = jsonLd ? JSON.stringify(jsonLd).replace(/</g, '\\u003c') : undefined;
+---
+
+<!doctype html>
+<html lang={t.meta.htmlLang} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content={c.background} />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Self-hosted fonts (no Google request), preloaded so text does not jump when they arrive. -->
+    <Font cssVariable="--font-heading" preload />
+    <Font cssVariable="--font-body" preload />
+    <style is:inline set:html={themeCss}></style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={shareUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={shareAlt} />
+    <meta property="og:locale" content={t.meta.ogLocale} />
+    <meta property="og:locale:alternate" content={tOther.meta.ogLocale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={shareUrl} />
+    <meta name="twitter:image:alt" content={shareAlt} />
+
+    {jsonLdText && <script is:inline type="application/ld+json" set:html={jsonLdText} />}
+  </head>
+  <body class="flex min-h-svh flex-col">
+    <a class="skip-link no-print" href="#main">{t.a11y.skipToContent}</a>
+
+    {
+      site.notice && (
+        <div class="no-print bg-primary text-on-primary on-dark">
+          <p class="container-site py-2.5 text-center text-sm font-semibold sm:text-[0.95rem]">{site.notice[lang]}</p>
+        </div>
+      )
+    }
+
+    <Header lang={lang} page={page} />
+
+    <main id="main" tabindex="-1" class="flex-1 focus:outline-none">
+      <slot />
+    </main>
+
+    <Footer lang={lang} page={page} />
+    <MobileBar lang={lang} />
+
+    <script>
+      import '~/scripts/main';
+    </script>
+  </body>
+</html>

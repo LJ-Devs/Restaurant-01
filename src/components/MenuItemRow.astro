@@ -1,0 +1,67 @@
+---
+import type { Locale, MenuItem } from '~/config/types';
+import { formatPrice } from '~/lib/format';
+import DietaryTags from './DietaryTags.astro';
+import Photo from './Photo.astro';
+
+interface Props {
+  item: MenuItem;
+  lang: Locale;
+}
+
+const { item, lang } = Astro.props;
+const single = typeof item.price === 'number' ? item.price : undefined;
+const options = Array.isArray(item.price) ? item.price : [];
+---
+
+<li class="menu-item flex gap-4 border-b border-line py-5 break-inside-avoid print:gap-0 print:py-2">
+  {
+    item.photo && (
+      <Photo
+        photo={item.photo}
+        lang={lang}
+        width={192}
+        height={192}
+        widths={[96, 192]}
+        sizes="96px"
+        class="size-20 rounded-xl object-cover sm:size-24"
+        pictureClass="no-print flex-none"
+      />
+    )
+  }
+  <div class="min-w-0 flex-1">
+    <div class="flex items-baseline gap-3">
+      <h3 class="font-display text-xl leading-snug font-semibold print:text-[12pt]">{item.name[lang]}</h3>
+      {
+        (single !== undefined || (options.length === 0 && item.priceNote)) && (
+          <>
+            <span class="mb-1.5 min-w-6 flex-1 border-b-2 border-dotted border-line print:border-b" aria-hidden="true" />
+            <p class="text-right text-lg font-bold whitespace-nowrap text-ink print:text-[11pt]">
+              {single !== undefined && formatPrice(single)}
+              {item.priceNote && (
+                <span class:list={['text-sm font-semibold text-muted', single !== undefined && 'ml-1']}>
+                  {item.priceNote[lang]}
+                </span>
+              )}
+            </p>
+          </>
+        )
+      }
+    </div>
+    {item.description && <p class="mt-1 text-muted print:mt-0 print:text-[9.5pt]">{item.description[lang]}</p>}
+    {
+      options.length > 0 && (
+        <ul class="mt-2 flex flex-wrap gap-x-5 gap-y-1 print:mt-0.5 print:text-[10pt]">
+          {options.map((option) => (
+            <li class="text-[1.0625rem] print:text-[10pt]">
+              <span class="text-muted">{option.label[lang]}</span>{' '}
+              <span class="font-bold whitespace-nowrap">{formatPrice(option.price)}</span>
+            </li>
+          ))}
+          {item.priceNote && <li class="text-sm font-semibold text-muted">{item.priceNote[lang]}</li>}
+        </ul>
+      )
+    }
+    <DietaryTags tags={item.tags} lang={lang} class="mt-2.5 print:mt-1" />
+  </div>
+</li>

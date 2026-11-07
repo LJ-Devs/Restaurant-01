@@ -1,0 +1,44 @@
+---
+/**
+ * Link to the same page in the other language. A small script also keeps the
+ * section the visitor was on (e.g. /#horario → /en/#hours).
+ */
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { otherLocale, routes, useTranslations, type PageKey } from '~/i18n';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Locale;
+  page: PageKey | null;
+  class?: string;
+}
+
+const { lang, page, class: className } = Astro.props;
+const other = otherLocale(lang);
+const t = useTranslations(lang);
+const tOther = useTranslations(other);
+const href = routes[page ?? 'home'][other];
+
+// Section anchors in this language → same sections in the other language
+const sectionKeys = Object.keys(t.sectionIds) as Array<keyof typeof t.sectionIds>;
+const hashMap = Object.fromEntries(sectionKeys.map((key) => [t.sectionIds[key], tOther.sectionIds[key]]));
+// Menu categories use the same anchors in both languages
+for (const category of site.menu) hashMap[category.id] = category.id;
+---
+
+<a
+  href={href}
+  hreflang={tOther.meta.htmlLang}
+  lang={tOther.meta.htmlLang}
+  data-lang-switch
+  data-hash-map={JSON.stringify(hashMap)}
+  class:list={[
+    'inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 font-bold tracking-wide text-ink hover:bg-primary-soft',
+    className,
+  ]}
+>
+  <Icon name="globe" size={18} />
+  <span>{other.toUpperCase()}</span>
+  <span class="sr-only">({t.a11y.otherLanguage})</span>
+</a>

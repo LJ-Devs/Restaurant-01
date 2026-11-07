@@ -1,0 +1,40 @@
+---
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { useTranslations } from '~/i18n';
+import { directionsHref } from '~/lib/links';
+import Icon from './Icon.astro';
+import MapEmbed from './MapEmbed.astro';
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { street, postalCode, city } = site.address;
+---
+
+<section id={t.sectionIds.location} aria-labelledby="location-title">
+  <SectionHeading id="location-title" eyebrow={t.location.eyebrow} title={t.location.title} compact />
+
+  <div class="card mt-8 flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+    <address class="flex gap-4 not-italic">
+      <span class="flex size-11 flex-none items-center justify-center rounded-full bg-primary-soft text-primary">
+        <Icon name="pin" />
+      </span>
+      <span class="text-[1.0625rem] leading-snug">
+        <strong class="block font-semibold">{site.name}</strong>
+        {street}<br />{postalCode} {city}
+      </span>
+    </address>
+    <a href={directionsHref(site)} class="btn btn-primary flex-none" target="_blank" rel="noopener">
+      <Icon name="directions" />
+      {t.cta.directions}
+      <span class="sr-only">{t.a11y.newTab}</span>
+    </a>
+  </div>
+
+  {site.map.embed && <MapEmbed lang={lang} />}
+</section>

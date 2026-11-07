@@ -1,0 +1,47 @@
+---
+import { getImage } from 'astro:assets';
+import About from '~/components/About.astro';
+import Contact from '~/components/Contact.astro';
+import FeaturedDishes from '~/components/FeaturedDishes.astro';
+import Hero from '~/components/Hero.astro';
+import Hours from '~/components/Hours.astro';
+import Location from '~/components/Location.astro';
+import Reviews from '~/components/Reviews.astro';
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { loadImage } from '~/lib/images';
+import { businessJsonLd } from '~/lib/schema';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const siteUrl = Astro.site ?? new URL(site.url);
+
+// Images for Google (absolute URLs, JPEG).
+const hero = await getImage({ src: await loadImage(site.images.hero.src), width: 1200, height: 800, format: 'jpg' });
+const share = await getImage({
+  src: await loadImage(site.images.share),
+  width: 1200,
+  height: 630,
+  format: 'jpg',
+  quality: 80,
+});
+const jsonLd = businessJsonLd(site, lang, siteUrl, [new URL(hero.src, siteUrl).href, new URL(share.src, siteUrl).href]);
+---
+
+<BaseLayout lang={lang} page="home" title={site.seo.title[lang]} description={site.seo.description[lang]} jsonLd={jsonLd}>
+  <Hero lang={lang} />
+  <About lang={lang} />
+  <FeaturedDishes lang={lang} />
+  <Reviews lang={lang} />
+  <div class="py-16 sm:py-24">
+    <div class="container-site grid gap-16 lg:grid-cols-2 lg:gap-14 xl:gap-20">
+      <Hours lang={lang} />
+      <Location lang={lang} />
+    </div>
+  </div>
+  <Contact lang={lang} />
+</BaseLayout>

@@ -1,0 +1,99 @@
+---
+/**
+ * Big photo with the name, tagline and the two main buttons.
+ * The photo is art-directed: phones get a tall (2:3) crop, larger screens the
+ * full landscape (3:2) photo. Both in AVIF and WebP, loaded with high priority.
+ */
+import { getImage } from 'astro:assets';
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { routes, useTranslations } from '~/i18n';
+import { loadImage } from '~/lib/images';
+import { telHref } from '~/lib/links';
+import Icon from './Icon.astro';
+import OpenStatus from './OpenStatus.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const image = await loadImage(site.images.hero.src);
+
+const phone = { media: '(max-width: 47.99rem)', width: 1080, height: 1620, widths: [540, 720, 900, 1080] };
+const wide = { width: 2400, height: 1600, widths: [960, 1280, 1600, 1920, 2400] };
+
+const sources = [];
+for (const crop of [phone, wide]) {
+  for (const format of ['avif', 'webp'] as const) {
+    const result = await getImage({
+      src: image,
+      format,
+      width: crop.width,
+      height: crop.height,
+      widths: crop.widths,
+      // The photo sits under a dark gradient, so a lower quality is invisible and loads faster.
+      quality: format === 'avif' ? 50 : 60,
+    });
+    sources.push({
+      media: crop === phone ? phone.media : undefined,
+      type: `image/${format}`,
+      srcset: result.srcSet.attribute,
+    });
+  }
+}
+const fallback = await getImage({ src: image, format: 'jpg', width: 1600, height: 1067, quality: 70 });
+---
+
+<section class="on-dark relative isolate overflow-hidden bg-dark text-white" aria-labelledby="hero-title">
+  <picture>
+    {sources.map((source) => <source media={source.media} type={source.type} srcset={source.srcset} sizes="100vw" />)}
+    <img
+      src={fallback.src}
+      width={fallback.attributes.width}
+      height={fallback.attributes.height}
+      alt={site.images.hero.alt[lang]}
+      fetchpriority="high"
+      loading="eager"
+      decoding="async"
+      class="absolute inset-0 -z-20 size-full object-cover"
+    />
+  </picture>
+  <div
+    class="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgb(0_0_0/0.86)_0%,rgb(0_0_0/0.62)_42%,rgb(0_0_0/0.18)_78%,rgb(0_0_0/0.3)_100%)]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div
+    class="container-site flex min-h-[min(150vw,100svh)] flex-col justify-end pt-24 pb-10 sm:pb-14 md:min-h-[min(66.67vw,88svh,52rem)] md:pb-20"
+  >
+    <p class="mb-3 text-sm font-bold tracking-[0.16em] text-white/90 uppercase [text-shadow:0_1px_2px_rgb(0_0_0/0.5)]">
+      {site.cuisine[lang]} · {site.address.city}
+    </p>
+    <h1
+      id="hero-title"
+      class="max-w-4xl text-[clamp(2.9rem,11vw,6.25rem)] leading-[0.95] font-semibold text-white [text-shadow:0_2px_12px_rgb(0_0_0/0.35)]"
+    >
+      {site.name}
+    </h1>
+    <p class="mt-4 max-w-2xl text-lg leading-snug text-white/95 sm:text-[1.375rem] [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]">
+      {site.tagline[lang]}
+    </p>
+    <div class="mt-6">
+      <OpenStatus lang={lang} variant="hero" />
+    </div>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href={routes.menu[lang]} class="btn btn-light">
+        <Icon name="utensils" />
+        {t.cta.viewMenu}
+      </a>
+      <a href={telHref(site.contact.phone)} class="btn btn-ghost-light">
+        <Icon name="phone" />
+        {t.cta.call}
+      </a>
+    </div>
+  </div>
+</section>
+<div class="azulejo-band" aria-hidden="true"></div>

@@ -1,0 +1,57 @@
+---
+/**
+ * Privacy policy. The text is in src/legal/privacy.pt.md and privacy.en.md.
+ * {{placeholders}} in those files are filled in from the client config.
+ */
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { useTranslations } from '~/i18n';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import * as privacyEn from '~/legal/privacy.en.md';
+import * as privacyPt from '~/legal/privacy.pt.md';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const document = lang === 'pt' ? privacyPt : privacyEn;
+
+// Hosting company, detected when building on Netlify or Cloudflare Pages.
+const hosting =
+  process.env.NETLIFY === 'true'
+    ? 'Netlify, Inc.'
+    : process.env.CF_PAGES === '1'
+      ? 'Cloudflare, Inc.'
+      : lang === 'pt'
+        ? 'Netlify, Inc. ou Cloudflare, Inc.'
+        : 'Netlify, Inc. or Cloudflare, Inc.';
+
+const escapeHtml = (text: string) =>
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const values: Record<string, string> = {
+  name: site.name,
+  companyName: site.legal.companyName,
+  nif: site.legal.nif,
+  address: `${site.address.street}, ${site.address.postalCode} ${site.address.city}`,
+  email: site.contact.email,
+  phone: site.contact.phone,
+  hosting,
+};
+
+const html = (await document.compiledContent()).replace(/\{\{(\w+)\}\}/g, (match, key: string) =>
+  key in values ? escapeHtml(values[key]) : match,
+);
+---
+
+<BaseLayout lang={lang} page="privacy" title={`${t.meta.privacyTitle} · ${site.name}`} description={t.meta.privacyDescription}>
+  <article class="container-site py-12 sm:py-16">
+    <div class="mx-auto max-w-3xl">
+      <p class="eyebrow">{t.privacy.eyebrow}</p>
+      <h1 class="section-title mt-3">{t.meta.privacyTitle}</h1>
+      <div class="prose-site mt-8 text-[1.0625rem] leading-relaxed" set:html={html} />
+    </div>
+  </article>
+</BaseLayout>

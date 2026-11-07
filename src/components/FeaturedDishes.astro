@@ -1,0 +1,73 @@
+---
+import { site } from '~/config';
+import type { Locale, MenuItem } from '~/config/types';
+import { fill, routes, useTranslations } from '~/i18n';
+import { formatPrice, lowestPrice } from '~/lib/format';
+import DietaryTags from './DietaryTags.astro';
+import Icon from './Icon.astro';
+import Photo from './Photo.astro';
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const allItems = new Map(site.menu.flatMap((category) => category.items.map((item) => [item.id, item] as const)));
+const dishes = site.featuredDishes
+  .map((id) => allItems.get(id))
+  .filter((item): item is MenuItem & { photo: NonNullable<MenuItem['photo']> } => Boolean(item?.photo));
+
+function priceLabel(item: MenuItem): string | undefined {
+  const lowest = lowestPrice(item);
+  if (lowest === undefined) return item.priceNote?.[lang];
+  return Array.isArray(item.price) && item.price.length > 1
+    ? fill(t.dishes.from, { price: formatPrice(lowest) })
+    : formatPrice(lowest);
+}
+---
+
+<section id={t.sectionIds.dishes} aria-labelledby="dishes-title" class="border-y border-line bg-surface py-16 sm:py-24">
+  <div class="container-site">
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+      <SectionHeading id="dishes-title" eyebrow={t.dishes.eyebrow} title={t.dishes.title} />
+      <a href={routes.menu[lang]} class="btn btn-outline hidden self-start sm:inline-flex sm:self-auto">
+        {t.cta.fullMenu}
+        <Icon name="arrow" />
+      </a>
+    </div>
+
+    <ul class="mt-10 grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+      {
+        dishes.map((item) => (
+          <li class="card flex flex-col overflow-hidden">
+            <Photo
+              photo={item.photo}
+              lang={lang}
+              width={800}
+              height={600}
+              widths={[400, 600, 800]}
+              sizes="(min-width: 1024px) 23rem, (min-width: 640px) 46vw, 92vw"
+              class="aspect-[4/3] w-full object-cover"
+            />
+            <div class="flex flex-1 flex-col gap-2 p-5 sm:p-6">
+              <div class="flex items-start justify-between gap-4">
+                <h3 class="text-[1.375rem] leading-tight">{item.name[lang]}</h3>
+                <p class="pt-1 text-lg font-bold whitespace-nowrap text-accent">{priceLabel(item)}</p>
+              </div>
+              {item.description && <p class="text-muted">{item.description[lang]}</p>}
+              <DietaryTags tags={item.tags} lang={lang} class="mt-auto pt-2" />
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a href={routes.menu[lang]} class="btn btn-primary mt-8 w-full sm:hidden">
+      {t.cta.fullMenu}
+      <Icon name="arrow" />
+    </a>
+  </div>
+</section>

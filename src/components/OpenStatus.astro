@@ -1,0 +1,44 @@
+---
+/**
+ * "Aberto agora · fecha às 15:00" badge. The text is calculated in the
+ * visitor's browser (Europe/Lisbon time) by src/scripts/main.ts, because the
+ * site is static. Without JavaScript the hero badge simply links to the hours.
+ */
+import type { Locale } from '~/config/types';
+import { routes, useTranslations } from '~/i18n';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Locale;
+  variant: 'hero' | 'card';
+}
+
+const { lang, variant } = Astro.props;
+const t = useTranslations(lang);
+---
+
+{
+  variant === 'hero' ? (
+    <a
+      href={`${routes.home[lang]}#${t.sectionIds.hours}`}
+      data-open-status
+      class="group inline-flex min-h-10 items-center gap-2.5 rounded-full bg-black/45 px-4 py-2 text-[0.95rem] font-semibold text-white no-underline ring-1 ring-white/25 hover:bg-black/60"
+    >
+      <span class="relative flex size-2.5 flex-none" aria-hidden="true">
+        <span class="absolute inset-0 rounded-full bg-white/80 group-data-[state=closed]:bg-[#ff8a80] group-data-[state=open]:animate-ping group-data-[state=open]:bg-[#7ee2a8] motion-reduce:animate-none" />
+        <span class="relative size-2.5 rounded-full bg-white group-data-[state=closed]:bg-[#ff8a80] group-data-[state=open]:bg-[#7ee2a8]" />
+      </span>
+      <span data-open-status-text>{t.hours.title}</span>
+      <Icon name="clock" size={18} class="opacity-80 group-data-[state]:hidden" />
+    </a>
+  ) : (
+    <p
+      data-open-status
+      hidden
+      class="group inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-bold data-[state=closed]:bg-closed/10 data-[state=closed]:text-closed data-[state=open]:bg-open/10 data-[state=open]:text-open"
+    >
+      <span class="size-2 flex-none rounded-full bg-current" aria-hidden="true" />
+      <span data-open-status-text />
+    </p>
+  )
+}

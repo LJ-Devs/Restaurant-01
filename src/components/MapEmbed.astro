@@ -1,0 +1,62 @@
+---
+/**
+ * Privacy-friendly map: nothing is requested from Google until the visitor
+ * clicks "Mostrar mapa". Without JavaScript the button opens Google Maps instead.
+ * The background is a simple drawing, generated here (no image file needed).
+ */
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { fill, useTranslations } from '~/i18n';
+import { mapEmbedSrc } from '~/lib/links';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${site.geo.lat}%2C${site.geo.lng}`;
+
+// A few "streets" and "blocks" for the decorative background (stable, not random).
+const streets = [
+  'M-20 70 C 120 60, 220 95, 420 80',
+  'M-20 190 C 90 200, 260 170, 420 205',
+  'M70 -20 C 80 90, 60 200, 95 320',
+  'M300 -20 C 280 120, 330 210, 310 320',
+  'M-20 260 L 420 120',
+];
+---
+
+<div
+  class="relative mt-6 aspect-[4/3] overflow-hidden rounded-2xl border border-line bg-primary-soft sm:aspect-[16/10] lg:aspect-[4/3]"
+  data-map
+  data-map-src={mapEmbedSrc(site, lang)}
+  data-map-title={fill(t.location.mapTitle, { name: site.name })}
+>
+  <svg
+    class="absolute inset-0 size-full text-primary"
+    viewBox="0 0 400 300"
+    preserveAspectRatio="xMidYMid slice"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <rect width="400" height="300" fill="currentColor" opacity="0.06"></rect>
+    <rect x="120" y="105" width="110" height="60" rx="8" fill="#3f8f5a" opacity="0.18"></rect>
+    <rect x="335" y="225" width="80" height="70" rx="8" fill="#3f8f5a" opacity="0.15"></rect>
+    {streets.map((d) => <path d={d} fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round" />)}
+    {streets.map((d) => <path d={d} fill="none" stroke="currentColor" stroke-opacity="0.12" stroke-width="1.5" />)}
+    <g transform="translate(200 118)">
+      <path d="M0 26C-12 12-18 2-18-8a18 18 0 0 1 36 0c0 10-6 20-18 34z" fill="currentColor"></path>
+      <circle cy="-8" r="6.5" fill="#ffffff"></circle>
+    </g>
+  </svg>
+
+  <div class="relative flex h-full items-end justify-center p-5 sm:p-6">
+    <a href={mapsUrl} class="btn btn-primary shadow-lg" data-map-load target="_blank" rel="noopener">
+      <Icon name="pin" />
+      {t.location.showMap}
+    </a>
+  </div>
+</div>
+<p class="mt-3 text-sm leading-snug text-muted">{t.location.mapNotice}</p>

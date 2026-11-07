@@ -1,0 +1,59 @@
+---
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { fill, useTranslations } from '~/i18n';
+import { formatCount, formatRating } from '~/lib/format';
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+import StarRating from './StarRating.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { rating, count, googleUrl, featured } = site.reviews;
+const reviews = featured.slice(0, 6);
+const columns = reviews.length % 3 === 0 ? 'lg:grid-cols-3' : 'lg:grid-cols-2 xl:grid-cols-4';
+---
+
+<section id={t.sectionIds.reviews} aria-labelledby="reviews-title" class="azulejo-wash bg-primary-soft py-16 sm:py-24">
+  <div class="container-site">
+    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <SectionHeading id="reviews-title" eyebrow={t.reviews.eyebrow} title={t.reviews.title} />
+      <div class="card flex items-center gap-4 self-start px-5 py-4 lg:self-auto">
+        <p class="font-display text-5xl leading-none font-semibold text-ink">{formatRating(rating, lang)}</p>
+        <div class="flex flex-col gap-1">
+          <StarRating value={rating} lang={lang} size={22} />
+          <p class="text-sm font-semibold text-muted">{fill(t.reviews.count, { count: formatCount(count, lang) })}</p>
+        </div>
+      </div>
+    </div>
+
+    <ul class:list={['mt-10 grid gap-5 md:grid-cols-2', columns]}>
+      {
+        reviews.map((review) => (
+          <li class="card flex">
+            <figure class="flex flex-col gap-4 p-6">
+              <StarRating value={review.rating} lang={lang} size={18} />
+              <blockquote class="text-[1.0625rem] leading-relaxed text-ink">
+                <p>“{review.text[lang]}”</p>
+              </blockquote>
+              <figcaption class="mt-auto font-semibold text-ink">
+                <span class="sr-only">{fill(t.reviews.by, { name: review.name })}</span>
+                <span aria-hidden="true">— {review.name}</span>
+              </figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a href={googleUrl} class="btn btn-primary mt-10" target="_blank" rel="noopener">
+      {t.cta.allReviews}
+      <Icon name="external" />
+      <span class="sr-only">{t.a11y.newTab}</span>
+    </a>
+  </div>
+</section>

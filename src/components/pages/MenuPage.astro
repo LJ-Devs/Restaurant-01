@@ -1,0 +1,94 @@
+---
+import Icon from '~/components/Icon.astro';
+import MenuItemRow from '~/components/MenuItemRow.astro';
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { useTranslations } from '~/i18n';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const categories = site.menu.filter((category) => category.items.length > 0);
+---
+
+<BaseLayout lang={lang} page="menu" title={`${t.meta.menuTitle} · ${site.name}`} description={site.seo.menuDescription[lang]}>
+  <!-- Shown only on paper -->
+  <div class="print-only container-site hidden">
+    <div class="mb-4 border-b border-black pb-3">
+      <p class="font-display text-3xl font-semibold">{site.name}</p>
+      <p class="text-sm">
+        {site.address.street}, {site.address.postalCode} {site.address.city} · {site.contact.phone}
+      </p>
+    </div>
+  </div>
+
+  <section aria-labelledby="menu-title" class="pt-10 pb-6 sm:pt-16 print:pt-0">
+    <div class="container-site">
+      <p class="eyebrow no-print">{t.menu.eyebrow}</p>
+      <h1 id="menu-title" class="section-title mt-3 print:mt-0 print:text-2xl">{t.menu.title}</h1>
+      {site.menuIntro && <p class="mt-4 max-w-2xl text-lg text-muted print:text-sm">{site.menuIntro[lang]}</p>}
+      <button type="button" data-print hidden class="btn btn-outline no-print mt-6">
+        <Icon name="printer" />
+        {t.cta.print}
+      </button>
+    </div>
+  </section>
+
+  <nav
+    aria-label={t.menu.categories}
+    class="no-print sticky top-16 z-30 border-y border-line bg-bg/95 lg:top-20"
+  >
+    <div class="container-site">
+      <ul
+        class="-mx-1 flex gap-2 overflow-x-auto px-1 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        data-menu-tabs
+      >
+        {
+          categories.map((category) => (
+            <li class="flex-none">
+              <a
+                href={`#${category.id}`}
+                class="inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-4 font-semibold whitespace-nowrap text-ink no-underline hover:border-primary aria-[current=true]:border-primary aria-[current=true]:bg-primary aria-[current=true]:text-on-primary"
+              >
+                {category.name[lang]}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container-site py-8 sm:py-12 print:py-0">
+    {
+      categories.map((category) => (
+        <section
+          id={category.id}
+          aria-labelledby={`${category.id}-title`}
+          class="mb-12 scroll-mt-14 last:mb-6 lg:scroll-mt-16 print:mb-6"
+        >
+          <div class="flex flex-col gap-1 border-b-2 border-ink pb-3 print:break-after-avoid">
+            <h2 id={`${category.id}-title`} class="text-3xl sm:text-4xl print:text-xl">
+              {category.name[lang]}
+            </h2>
+            {category.note && <p class="text-muted">{category.note[lang]}</p>}
+          </div>
+          <ul class="grid md:grid-cols-2 md:gap-x-12 print:grid-cols-1">
+            {category.items.map((item) => (
+              <MenuItemRow item={item} lang={lang} />
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+
+    <aside class="card mt-4 flex flex-col gap-3 p-6 text-[0.95rem] text-ink print:mt-2 print:p-0 print:text-xs">
+      <p class="font-semibold">{t.menu.vat}</p>
+      <p class="text-muted">{t.menu.allergens}</p>
+    </aside>
+  </div>
+</BaseLayout>

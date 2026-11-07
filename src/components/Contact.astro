@@ -1,0 +1,108 @@
+---
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { fill, useTranslations } from '~/i18n';
+import { phoneKind, telHref, whatsappHref } from '~/lib/links';
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+/** Call-cost note required next to phone numbers in Portugal. */
+function callCost(phone: string): string | undefined {
+  const kind = phoneKind(phone);
+  if (kind === 'landline') return t.contact.callLandline;
+  if (kind === 'mobile') return t.contact.callMobile;
+  return undefined;
+}
+
+type IconName = 'phone' | 'whatsapp' | 'mail' | 'instagram' | 'facebook' | 'tripadvisor';
+interface ContactItem {
+  icon: IconName;
+  label: string;
+  value: string;
+  note?: string;
+  href: string;
+  external: boolean;
+}
+
+const items: ContactItem[] = [
+  {
+    icon: 'phone',
+    label: t.contact.phone,
+    value: site.contact.phone,
+    note: callCost(site.contact.phone),
+    href: telHref(site.contact.phone),
+    external: false,
+  },
+];
+if (site.contact.whatsapp) {
+  items.push({
+    icon: 'whatsapp',
+    label: t.contact.whatsapp,
+    value: t.contact.whatsappAction,
+    note: site.contact.whatsapp,
+    href: whatsappHref(site.contact.whatsapp),
+    external: true,
+  });
+}
+items.push({
+  icon: 'mail',
+  label: t.contact.email,
+  value: site.contact.email,
+  href: `mailto:${site.contact.email}`,
+  external: false,
+});
+
+const networks = [
+  { key: 'instagram', name: 'Instagram', url: site.social.instagram },
+  { key: 'facebook', name: 'Facebook', url: site.social.facebook },
+  { key: 'tripadvisor', name: 'Tripadvisor', url: site.social.tripadvisor },
+] as const;
+for (const network of networks) {
+  if (!network.url) continue;
+  items.push({
+    icon: network.key,
+    label: network.name,
+    value: fill(t.contact.followOn, { network: network.name }),
+    href: network.url,
+    external: true,
+  });
+}
+---
+
+<section id={t.sectionIds.contact} aria-labelledby="contact-title" class="border-t border-line bg-surface py-16 sm:py-24">
+  <div class="container-site">
+    <SectionHeading id="contact-title" eyebrow={t.contact.eyebrow} title={t.contact.title} />
+
+    <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        items.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noopener' : undefined}
+              class="group flex h-full items-center gap-4 rounded-2xl border border-line bg-bg p-5 text-ink no-underline transition-colors hover:border-primary hover:bg-primary-soft"
+            >
+              <span class="flex size-12 flex-none items-center justify-center rounded-full bg-primary text-on-primary">
+                <Icon name={item.icon} />
+              </span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-muted">{item.label}</span>
+                <span class="block text-lg font-bold break-words group-hover:underline">{item.value}</span>
+                {item.note && <span class="block text-sm text-muted">{item.note}</span>}
+                {item.external && <span class="sr-only">{t.a11y.newTab}</span>}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

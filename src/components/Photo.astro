@@ -1,0 +1,46 @@
+---
+/**
+ * An optimised photo of the active client (src/assets/images/<id>/).
+ * Astro resizes it, converts it to AVIF/WebP, adds width/height (no layout jumps)
+ * and lazy-loads it. Photos are cropped to the given width:height ratio, so
+ * clients' photos can have any shape.
+ */
+import { Picture } from 'astro:assets';
+import type { Locale, Photo as PhotoData } from '~/config/types';
+import { loadImage } from '~/lib/images';
+
+interface Props {
+  photo: PhotoData;
+  lang: Locale;
+  /** Target size (sets the crop ratio). */
+  width: number;
+  height: number;
+  /** Image widths to generate, e.g. [400, 800]. */
+  widths: number[];
+  /** How wide the image is shown, e.g. "(min-width: 1024px) 400px, 100vw". */
+  sizes: string;
+  /** Classes for the <img> (size, rounding…). */
+  class?: string;
+  /** Classes for the wrapping <picture> (position in a grid…). */
+  pictureClass?: string;
+  /** Load first (only for images visible without scrolling). */
+  priority?: boolean;
+}
+
+const { photo, lang, width, height, widths, sizes, class: className, pictureClass, priority = false } = Astro.props;
+const image = await loadImage(photo.src);
+---
+
+<Picture
+  src={image}
+  alt={photo.alt[lang]}
+  width={width}
+  height={height}
+  widths={widths}
+  sizes={sizes}
+  formats={['avif', 'webp']}
+  quality={72}
+  priority={priority}
+  class={className}
+  pictureAttributes={{ class: `block ${pictureClass ?? ''}`.trim() }}
+/>

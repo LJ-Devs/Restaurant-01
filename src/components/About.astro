@@ -1,0 +1,60 @@
+---
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { useTranslations } from '~/i18n';
+import { paragraphs } from '~/lib/format';
+import Photo from './Photo.astro';
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [first, ...others] = site.images.about.slice(0, 3);
+// With 3 photos: one tall photo on the left, two landscape photos on the right.
+const collage = others.length === 2;
+const sizes = '(min-width: 1024px) 22rem, 46vw';
+---
+
+<section id={t.sectionIds.about} aria-labelledby="about-title" class="py-16 sm:py-24">
+  <div class="container-site grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
+    <div class="lg:col-span-5">
+      <SectionHeading id="about-title" eyebrow={t.about.eyebrow} title={site.story.title[lang]} />
+      <div class="mt-6 space-y-4 text-lg leading-relaxed text-ink/90">
+        {paragraphs(site.story.text[lang]).map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:col-span-7">
+      {
+        first && (
+          <Photo
+            photo={first}
+            lang={lang}
+            width={800}
+            height={collage ? 1200 : 1000}
+            widths={[400, 600, 800]}
+            sizes={sizes}
+            class:list={['size-full rounded-2xl object-cover', !collage && 'aspect-[4/5]']}
+            pictureClass={collage ? 'row-span-2' : undefined}
+          />
+        )
+      }
+      {
+        others.map((photo) => (
+          <Photo
+            photo={photo}
+            lang={lang}
+            width={800}
+            height={collage ? 600 : 1000}
+            widths={[400, 600, 800]}
+            sizes={sizes}
+            class:list={['size-full rounded-2xl object-cover', collage ? 'aspect-[4/3]' : 'aspect-[4/5]']}
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>

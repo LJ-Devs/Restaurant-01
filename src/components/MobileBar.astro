@@ -1,0 +1,52 @@
+---
+/**
+ * Sticky bar at the bottom of the screen on phones: "Ligar" and "WhatsApp".
+ * On phones the header has no room for the booking button, so the WhatsApp
+ * button sends the same pre-filled booking message.
+ */
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { useTranslations } from '~/i18n';
+import { directionsHref, telHref, whatsappHref } from '~/lib/links';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const whatsapp = site.contact.whatsapp;
+const whatsappLink = whatsapp ? whatsappHref(whatsapp, site.booking.url ? undefined : site.booking.message[lang]) : undefined;
+---
+
+<nav
+  aria-label={t.a11y.quickContact}
+  class="no-print fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/95 px-3 pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-[0_-6px_20px_-12px_rgb(0_0_0/0.25)] md:hidden"
+>
+  <ul class="mx-auto grid max-w-md grid-cols-2 gap-2.5">
+    <li>
+      <a href={telHref(site.contact.phone)} class="btn btn-outline w-full bg-surface">
+        <Icon name="phone" />
+        {t.cta.call}
+      </a>
+    </li>
+    <li>
+      {
+        whatsappLink ? (
+          <a href={whatsappLink} class="btn btn-primary w-full" target="_blank" rel="noopener">
+            <Icon name="whatsapp" />
+            {t.cta.whatsapp}
+            <span class="sr-only">{t.a11y.newTab}</span>
+          </a>
+        ) : (
+          <a href={directionsHref(site)} class="btn btn-primary w-full" target="_blank" rel="noopener">
+            <Icon name="directions" />
+            {t.cta.directions}
+            <span class="sr-only">{t.a11y.newTab}</span>
+          </a>
+        )
+      }
+    </li>
+  </ul>
+</nav>

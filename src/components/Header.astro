@@ -1,0 +1,124 @@
+---
+import { Image } from 'astro:assets';
+import { site } from '~/config';
+import type { Locale } from '~/config/types';
+import { routes, useTranslations, type PageKey } from '~/i18n';
+import { loadImage } from '~/lib/images';
+import { bookingHref } from '~/lib/links';
+import Icon from './Icon.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  lang: Locale;
+  page: PageKey | null;
+}
+
+const { lang, page } = Astro.props;
+const t = useTranslations(lang);
+const home = routes.home[lang];
+const ids = t.sectionIds;
+
+const links = [
+  { href: `${home}#${ids.about}`, label: t.nav.about, desktop: true },
+  { href: `${home}#${ids.dishes}`, label: t.nav.dishes, desktop: false },
+  { href: routes.menu[lang], label: t.nav.menu, desktop: true, current: page === 'menu' },
+  { href: `${home}#${ids.reviews}`, label: t.nav.reviews, desktop: true },
+  { href: `${home}#${ids.hours}`, label: t.nav.hours, desktop: true },
+  { href: `${home}#${ids.location}`, label: t.nav.location, desktop: false },
+  { href: `${home}#${ids.contact}`, label: t.nav.contact, desktop: true },
+];
+
+const bookLabel = site.booking.label?.[lang] ?? t.cta.book;
+const bookHref = bookingHref(site, lang);
+const logo = site.images.logo;
+const logoImage = logo ? await loadImage(logo.src) : undefined;
+---
+
+<header class="site-header no-print sticky top-0 z-40 border-b border-line bg-bg">
+  <div class="container-site flex h-16 items-center gap-2 lg:h-20 lg:gap-4">
+    <a
+      href={home}
+      class="mr-auto flex min-h-11 min-w-0 items-center gap-2.5 rounded-lg text-ink no-underline"
+      aria-label={logo?.includesName ? undefined : `${site.name}, ${t.a11y.home}`}
+    >
+      {
+        logo && logoImage && (
+          <Image
+            src={logoImage}
+            alt={logo.includesName ? logo.alt[lang] : ''}
+            height={40}
+            width={Math.round((40 * logoImage.width) / logoImage.height)}
+            class="h-9 w-auto lg:h-10"
+            loading="eager"
+          />
+        )
+      }
+      {
+        !logo?.includesName && (
+          <span class="truncate font-display text-[1.3rem] font-semibold leading-none tracking-tight sm:text-2xl">
+            {site.name}
+          </span>
+        )
+      }
+    </a>
+
+    <nav aria-label={t.a11y.mainNav} class="hidden lg:block">
+      <ul class="flex items-center">
+        {
+          links
+            .filter((link) => link.desktop)
+            .map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  aria-current={link.current ? 'page' : undefined}
+                  class="inline-flex min-h-11 items-center rounded-full px-3.5 font-semibold text-ink no-underline hover:bg-primary-soft aria-[current=page]:text-primary aria-[current=page]:underline aria-[current=page]:decoration-2"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+        }
+      </ul>
+    </nav>
+
+    <LanguageSwitcher lang={lang} page={page} />
+
+    <a href={bookHref} class="btn btn-primary hidden md:inline-flex" target="_blank" rel="noopener">
+      {bookLabel}<span class="sr-only"> {t.a11y.newTab}</span>
+    </a>
+
+    <details class="group lg:hidden" data-mobile-nav>
+      <summary
+        class="flex size-11 cursor-pointer list-none items-center justify-center rounded-full text-ink hover:bg-primary-soft [&::-webkit-details-marker]:hidden"
+      >
+        <Icon name="menu" class="group-open:hidden" />
+        <Icon name="close" class="hidden group-open:block" />
+        <span class="sr-only">{t.nav.menu}</span>
+      </summary>
+      <div class="absolute inset-x-0 top-full max-h-[calc(100svh_-_4rem)] overflow-y-auto border-b border-line bg-bg shadow-xl">
+        <nav aria-label={t.a11y.mainNav} class="container-site py-4">
+          <ul class="divide-y divide-line">
+            {
+              links.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    aria-current={link.current ? 'page' : undefined}
+                    class="flex min-h-13 items-center justify-between py-3 text-lg font-semibold text-ink no-underline aria-[current=page]:text-primary"
+                  >
+                    {link.label}
+                    <Icon name="arrow" size={20} class="text-muted" />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <a href={bookHref} class="btn btn-primary mt-4 w-full" target="_blank" rel="noopener">
+            {bookLabel}<span class="sr-only"> {t.a11y.newTab}</span>
+          </a>
+        </nav>
+      </div>
+    </details>
+  </div>
+</header>

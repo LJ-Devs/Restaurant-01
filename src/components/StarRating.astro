@@ -1,0 +1,25 @@
+---
+/** Five stars, partly filled for decimals (4.7 → 4 full stars and 70% of the fifth). Pure CSS, see `.stars`. */
+import type { Locale } from '~/config/types';
+import { fill, useTranslations } from '~/i18n';
+import { formatRating } from '~/lib/format';
+
+interface Props {
+  value: number;
+  lang: Locale;
+  /** Size of one star in pixels. */
+  size?: number;
+  class?: string;
+}
+
+const { value, lang, size = 20, class: className } = Astro.props;
+const t = useTranslations(lang);
+const label = fill(t.a11y.stars, { rating: formatRating(value, lang) });
+const percent = Math.max(0, Math.min(100, (value / 5) * 100));
+---
+
+<span
+  role="img"
+  aria-label={label}
+  class:list={['stars', className]}
+  style={`--stars-fill:${percent}%;--star-size:${size}px`}></span>
