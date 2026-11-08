@@ -3,7 +3,7 @@
  *  SITE CONTENT: this is the only file you need to edit for a new client.
  * ─────────────────────────────────────────────────────────────────────────
  *
- *  Demo client: "Tasca do Largo", a FICTIONAL restaurant in Coimbra.
+ *  Demo client: "Tasca do Largo", a FICTIONAL restaurant.
  *  All contact details below are fake on purpose.
  *
  *  Tips
@@ -34,12 +34,12 @@ const config: SiteConfig = {
 
   seo: {
     title: {
-      pt: 'Tasca do Largo · Restaurante tradicional português em Coimbra',
-      en: 'Tasca do Largo · Traditional Portuguese restaurant in Coimbra',
+      pt: 'Tasca do Largo · Restaurante tradicional português',
+      en: 'Tasca do Largo · Traditional Portuguese restaurant',
     },
     description: {
-      pt: 'Chanfana, leitão, bacalhau e petiscos na Baixa de Coimbra. Almoço e jantar de terça a sábado. Reserve mesa por telefone ou WhatsApp.',
-      en: 'Chanfana, roast suckling pig, bacalhau and petiscos in downtown Coimbra. Lunch and dinner, Tuesday to Saturday. Book by phone or WhatsApp.',
+      pt: 'Chanfana, leitão, bacalhau e petiscos na Cidade. Almoço e jantar de terça a sábado. Reserve mesa por telefone ou WhatsApp.',
+      en: 'Chanfana, roast suckling pig, bacalhau and petiscos in the city. Lunch and dinner, Tuesday to Saturday. Book by phone or WhatsApp.',
     },
     menuDescription: {
       pt: 'Menu da Tasca do Largo com preços: entradas, peixe, carne, pratos vegetarianos, sobremesas caseiras e vinhos da Bairrada.',
@@ -53,19 +53,19 @@ const config: SiteConfig = {
       en: 'A neighbourhood tasca since 1987',
     },
     text: {
-      pt: 'Abrimos as portas em 1987, num pequeno largo da Baixa de Coimbra, com quatro mesas, um balcão de mármore e os cadernos de receitas da avó Lurdes.\n\nHoje somos mais, mas a cozinha continua igual: tachos ao lume desde manhã, produtos do Mercado D. Pedro V e vinho da Bairrada. A chanfana coze devagar em caçoila de barro preto, o leitão vem da Mealhada e as sobremesas são feitas cá em casa, todos os dias.\n\nVenha com tempo. À mesa, não há pressas.',
-      en: 'We opened our doors in 1987, on a small square in downtown Coimbra, with four tables, a marble counter and grandma Lurdes’s recipe notebooks.\n\nThere are more of us now, but the kitchen hasn’t changed: pots simmering since the morning, produce from the D. Pedro V market and wine from Bairrada. Our chanfana cooks slowly in a black clay pot, the suckling pig comes from Mealhada and every dessert is made in-house, every day.\n\nTake your time. There’s no rush at the table.',
+      pt: 'Abrimos as portas em 1987, num pequeno largo da Baixa, com quatro mesas, um balcão de mármore e os cadernos de receitas da avó.\n\nHoje somos mais, mas a cozinha continua igual: tachos ao lume desde manhã, produtos do Mercado e vinho da Bairrada. A chanfana coze devagar em caçoila de barro preto, o leitão vem da Mealhada e as sobremesas são feitas cá em casa, todos os dias.\n\nVenha com tempo. À mesa, não há pressas.',
+      en: 'We opened our doors in 1987, on a small square, with four tables, a marble counter and grandma recipe notebooks.\n\nThere are more of us now, but the kitchen hasn’t changed: pots simmering since the morning, produce from the market and wine from Bairrada. Our chanfana cooks slowly in a black clay pot, the suckling pig comes from Mealhada and every dessert is made in-house, every day.\n\nTake your time. There’s no rush at the table.',
     },
   },
 
   address: {
-    street: 'Largo das Flores, 12',
-    postalCode: '3000-000',
-    city: 'Coimbra',
-    region: 'Coimbra',
+    street: 'Rua da Rua, 12',
+    postalCode: '1234-000',
+    city: 'Cidade',
+    region: 'Reegião',
     country: 'PT',
   },
-  geo: { lat: 40.2097, lng: -8.4303 },
+  geo: { lat: 40, lng: -8 },
   map: {
     embed: true,
     zoom: 17,
@@ -126,7 +126,7 @@ const config: SiteConfig = {
       pt: 'Inclui sopa, bebida e café. De terça a sexta, ao almoço.',
       en: 'Includes soup, a drink and coffee. Tuesday to Friday, at lunchtime.',
     },
-    price: 12.5,
+    price: 10.5,
   },
 
   menu: [
@@ -478,8 +478,8 @@ const config: SiteConfig = {
         name: 'James',
         rating: 5,
         text: {
-          pt: 'Uma pérola escondida na Baixa de Coimbra. O polvo estava perfeito e o vinho da casa tem ótima relação qualidade-preço. Peçam o arroz doce!',
-          en: 'A hidden gem in downtown Coimbra. The octopus was perfect and the house wine is great value. Order the arroz doce!',
+          pt: 'Uma pérola escondida na cidade. O polvo estava perfeito e o vinho da casa tem ótima relação qualidade-preço. Peçam o arroz doce!',
+          en: 'A hidden gem in the city. The octopus was perfect and the house wine is great value. Order the arroz doce!',
         },
       },
       {

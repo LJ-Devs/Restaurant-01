@@ -3,7 +3,7 @@
 A fast, bilingual (Portuguese/English) website for small restaurants and cafés in Portugal.
 You set up a new client by **editing one file, replacing the photos and publishing**.
 
-It comes with a **fictional** demo client, **Tasca do Largo**, a traditional restaurant in Coimbra
+It comes with a **fictional** demo client, **Tasca do Largo**, a traditional restaurant in the city
 (azulejo blue, terracotta, Fraunces font).
 
 What every site includes:
